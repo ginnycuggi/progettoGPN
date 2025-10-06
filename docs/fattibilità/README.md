@@ -12,7 +12,7 @@ v0.0.1 - 05/10/25
 **Raccomandazione finale**: fattibile, interfaccia semplice, utilizzabile da tutti. Da oppurtunità di aiutarsi a vicenda
 **Investimento stimato**: [Intervallo di costo]
 **ROI atteso**: [Valore percentuale e temporale]
-**Rischi principali**: - creazione di un sito competitore - sito non utilizzato perchè esiste l'AI - non si riesce a verificare se gli schemi son validi davvero e si crea malcontento - 
+**Rischi principali**: - creazione di un sito competitore - sito non utilizzato perchè esiste l'AI - non si riesce a verificare se gli schemi son validi davvero e si crea malcontento -noemi
 
 # 1. Introduzione
 
