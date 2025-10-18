@@ -2,12 +2,23 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scambio di Schemi</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
-    <h1>Benvenuto su Scambio di Schemi</h1>
+    <h1>Benvenuto su Scambio di SchemiGPN</h1>
+
+    <form class="search-section" onsubmit="event.preventDefault(); handleSearch()">
+      <input type="text" id="searchInput" placeholder="🔍 Cerca uno schema..." class="search-bar">
+      <button type="submit">Cerca</button>
+    </form>
+
+    <div class="account-link">
+      <a href="registrazione.html" class="register-button">👤 Crea un account</a>
+    </div>
+
     <p>Scegli come accedere alla piattaforma:</p>
 
     <div class="option">
@@ -27,6 +38,15 @@
   </div>
 
   <script>
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.trim();
+      if (query) {
+        alert(`Hai cercato: "${query}"`);
+      } else {
+        alert("Inserisci un termine di ricerca.");
+      }
+    }
+
     function handleUpload() {
       const fileInput = document.getElementById('schemaUpload');
       const container = document.getElementById('uploadedSchemas');
