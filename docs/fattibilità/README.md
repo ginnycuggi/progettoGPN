@@ -11,13 +11,13 @@ v0.0.1 - 05/10/25
 **Scopo principale dello studio**: Necessità e aiuto per gli studenti 
 **Raccomandazione finale**: Fattibile, interfaccia semplice, utilizzabile da tutti. Da oppurtunità di aiutarsi a vicenda
 **Investimento stimato**: [Intervallo di costo]
-**ROI atteso**: [Valore percentuale e temporale]
+**ROI atteso**: utilizzo di tutte le ore di gestione dell'intero anno scolastico
 **Rischi principali**: - Creazione di un sito competitore - Sito non utilizzato perchè esiste l'AI - Non si riesce a verificare se gli schemi son validi davvero e si crea malcontento 
 
 # 1. Introduzione
 
-**Scopo del documento**: [Descrizione degli obiettivi dello studio di fattibilità]
-**Contesto del progetto**: [Descrizione del contesto]
+**Scopo del documento**: L'obiettivo principale dello studio di fattibilità è la spiegazione del lavoro svolto. 
+**Contesto del progetto**: Creazione di un sito utile nell'ambito della scuola; utile sia a professori e studenti per lo svolgimento del proprio lavoro.
 **Stakeholder coinvolti**: [Elenco puntato degli stakeholder principali]
 
 <br><br>
