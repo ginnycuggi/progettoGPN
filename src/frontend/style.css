@@ -130,7 +130,10 @@ body {
   .star:active {
     transform: scale(1.2);
   }
-  
+  .star.selected {
+  color: gold;
+}
+
   .schema-box {
     margin-top: 20px;
     padding: 15px;
