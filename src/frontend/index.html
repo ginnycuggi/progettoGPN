@@ -32,6 +32,11 @@
       <p>Carica uno schema valido per poter ritirarne un altro</p>
       <input type="file" id="schemaUpload" multiple ...>
       <input type="file" id="schemaUpload" accept=".pdf,.jpg,.jpeg,.png,.pwp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+      if (file.size > 5 * 1024 * 1024) {
+  alert("Il file supera i 5MB.");
+  return;
+}
+
       <button onclick="handleUpload()">Carica Schema</button>
     </div>
 
