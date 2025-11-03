@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">   
+</body>
+</html><div class="option">
+  <h2>Abbonamento</h2>
+  <p>Accedi pagando una quota mensile</p>
+  <button onclick="togglePaymentForm()">Paga ora</button>
+
+  <form id="paymentForm" class="hidden" onsubmit="event.preventDefault(); handlePayment()">
+    <h3>Seleziona un abbonamento:</h3>
+    <label><input type="radio" name="plan" value="Mensile Base - €10" required> Mensile Base - €10</label>
+    <label><input type="radio" name="plan" value="Mensile Plus - €15"> Mensile Plus - €15</label>
+    <label><input type="radio" name="plan" value="Mensile Premium - €20"> Mensile Premium - €20</label>
+    <label><input type="radio" name="plan" value="Annuale - €100"> Annuale - €100</label>
+
+    <h3>Metodo di pagamento:</h3>
+    <label><input type="radio" name="metodo" value="PayPal" required> PayPal</label>
+    <label><input type="radio" name="metodo" value="Mastercard"> Mastercard</label>
+    <label><input type="radio" name="metodo" value="Visa"> Visa</label>
+    <label><input type="radio" name="metodo" value="Apple Pay"> Apple Pay</label>
+
+    <button type="submit">Conferma pagamento</button>
+  </form>
+</div>

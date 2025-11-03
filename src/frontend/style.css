@@ -185,3 +185,13 @@ body {
     }
   }
   
+.hidden {
+  display: none;
+}
+form label {
+  display: block;
+  margin-bottom: 8px;
+}
+form h3 {
+  margin-top: 20px;
+}
