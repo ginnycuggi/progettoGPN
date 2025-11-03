@@ -84,6 +84,16 @@
         alert('Seleziona un file prima di caricare.');
       }
     }
-  </script>
+  function togglePaymentForm() {
+    document.getElementById("paymentForm").classList.toggle("hidden");
+  }
+
+  function handlePayment() {
+    const piano = document.querySelector('input[name="plan"]:checked').value;
+    const metodo = document.querySelector('input[name="metodo"]:checked').value;
+    alert(`Hai selezionato: ${piano}\nMetodo di pagamento: ${metodo}\nFunzione pagamento in arrivo!`);
+  }
+</script>
+
 </body>
 </html>
