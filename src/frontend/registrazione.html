@@ -3,83 +3,376 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accesso / Registrazione</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Accesso / Registrazione - SchemiGPN</title>
   <style>
-    .container { max-width: 400px; margin: auto; padding: 20px; }
-    .hidden { display: none; }
-    button { margin-top: 10px; }
+    /* ===== RESET E BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== CONTAINER PRINCIPALE ===== */
+    .container {
+      max-width: 450px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== TITOLO ===== */
+    h1 {
+      text-align: center;
+      color: #667eea;
+      font-size: 2em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ===== BOTTONI TOGGLE ===== */
+    .toggle-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .toggle-buttons button {
+      flex: 1;
+      padding: 12px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      border: 2px solid transparent;
+      border-radius: 50px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-buttons button:hover {
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      transform: translateY(-2px);
+    }
+
+    .toggle-buttons button.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+
+    /* ===== FORM ===== */
+    form {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    form.hidden {
+      display: none;
+    }
+
+    label {
+      display: block;
+      color: #555;
+      font-weight: 600;
+      margin-bottom: 8px;
+      margin-top: 15px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px 20px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+    }
+
+    /* ===== MESSAGGI DI ERRORE ===== */
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9em;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      display: none;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .input-error {
+      border-color: #dc3545 !important;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    /* ===== BOTTONI SUBMIT ===== */
+    button[type="submit"] {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(250, 112, 154, 0.6);
+    }
+
+    button[type="submit"]:active {
+      transform: translateY(0);
+    }
+
+    /* ===== LINK RITORNO ===== */
+    .back-link {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .back-link a {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    .back-link a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.6);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .container {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 1.6em;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 id="form-title">Registrazione</h1>
+    <h1 id="form-title">👤 Registrazione</h1>
 
-    <div>
-      <button onclick="showForm('register')">Registrati</button>
-      <button onclick="showForm('login')">Accedi</button>
+    <div class="toggle-buttons">
+      <button id="btn-register" class="active" onclick="showForm('register')">Registrati</button>
+      <button id="btn-login" onclick="showForm('login')">Accedi</button>
     </div>
 
     <form id="register-form" onsubmit="handleRegister(event)">
       <label for="reg-username">Nome utente:</label>
-      <input type="text" id="reg-username" required>
+      <input type="text" id="reg-username" placeholder="Inserisci il tuo nome utente" required>
+      <div class="error-message" id="username-error">⚠️ Inserisci un nome utente</div>
 
       <label for="reg-email">Email:</label>
-      <input type="email" id="reg-email" required>
+      <input type="email" id="reg-email" placeholder="esempio@email.com" required>
+      <div class="error-message" id="reg-email-error">⚠️ Email già registrata. Clicca su 'Accedi'</div>
 
       <label for="reg-password">Password:</label>
-      <input type="password" id="reg-password" required>
+      <input type="password" id="reg-password" placeholder="Almeno 6 caratteri" required>
+      <div class="error-message" id="password-error">⚠️ La password deve essere di almeno 6 caratteri</div>
 
       <label for="reg-confirm">Conferma password:</label>
-      <input type="password" id="reg-confirm" required>
+      <input type="password" id="reg-confirm" placeholder="Ripeti la password" required>
+      <div class="error-message" id="confirm-error">⚠️ Le password non coincidono</div>
 
-      <button type="submit">Registrati</button>
+      <button type="submit">✅ Registrati</button>
     </form>
 
     <form id="login-form" class="hidden" onsubmit="handleLogin(event)">
       <label for="login-email">Email:</label>
-      <input type="email" id="login-email" required>
+      <input type="email" id="login-email" placeholder="esempio@email.com" required>
+      <div class="error-message" id="login-email-error">⚠️ Inserisci un'email valida</div>
 
       <label for="login-password">Password:</label>
-      <input type="password" id="login-password" required>
+      <input type="password" id="login-password" placeholder="Inserisci la password" required>
+      <div class="error-message" id="login-password-error">⚠️ Inserisci la password</div>
 
-      <button type="submit">Accedi</button>
+      <button type="submit">🔓 Accedi</button>
     </form>
+
+    <div class="back-link">
+      <a href="preview.html">← Torna alla home</a>
+    </div>
   </div>
 
   <script>
     const existingEmails = ["test@email.com", "mario.rossi@email.com"];
 
     function showForm(type) {
-      document.getElementById("form-title").textContent = type === "register" ? "Registrazione" : "Accesso";
+      // Reset errori
+      document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('input').forEach(el => el.classList.remove('input-error'));
+
+      // Cambia titolo
+      document.getElementById("form-title").textContent = type === "register" ? "👤 Registrazione" : "🔓 Accesso";
+      
+      // Toggle form
       document.getElementById("register-form").classList.toggle("hidden", type !== "register");
       document.getElementById("login-form").classList.toggle("hidden", type !== "login");
+      
+      // Toggle bottoni attivi
+      document.getElementById("btn-register").classList.toggle("active", type === "register");
+      document.getElementById("btn-login").classList.toggle("active", type === "login");
     }
 
     function handleRegister(event) {
       event.preventDefault();
-      const email = document.getElementById("reg-email").value;
+
+      // Reset errori precedenti
+      document.querySelectorAll('#register-form .error-message').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('#register-form input').forEach(el => el.classList.remove('input-error'));
+
+      const username = document.getElementById("reg-username").value.trim();
+      const email = document.getElementById("reg-email").value.trim();
       const password = document.getElementById("reg-password").value;
       const confirm = document.getElementById("reg-confirm").value;
 
-      if (password !== confirm) {
-        alert("Le password non coincidono.");
-        return;
+      let hasError = false;
+
+      // Validazione username
+      if (!username) {
+        document.getElementById("username-error").classList.add('show');
+        document.getElementById("reg-username").classList.add('input-error');
+        hasError = true;
       }
 
+      // Validazione email esistente
       if (existingEmails.includes(email)) {
-        alert("Email già registrata. Clicca su 'Accedi'.");
+        document.getElementById("reg-email-error").classList.add('show');
+        document.getElementById("reg-email").classList.add('input-error');
+        hasError = true;
+      }
+
+      // Validazione password lunghezza
+      if (password.length < 6) {
+        document.getElementById("password-error").classList.add('show');
+        document.getElementById("reg-password").classList.add('input-error');
+        hasError = true;
+      }
+
+      // Validazione password coincidenza
+      if (password !== confirm) {
+        document.getElementById("confirm-error").classList.add('show');
+        document.getElementById("reg-confirm").classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) {
         return;
       }
 
-      alert("Registrazione completata!");
-      window.location.href = "index.html";
+      alert("✅ Registrazione completata con successo!");
+      window.location.href = "preview.html";
     }
 
     function handleLogin(event) {
       event.preventDefault();
-      alert("Accesso effettuato!");
-      window.location.href = "index.html";
+
+      // Reset errori precedenti
+      document.querySelectorAll('#login-form .error-message').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('#login-form input').forEach(el => el.classList.remove('input-error'));
+
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      let hasError = false;
+
+      // Validazione email
+      if (!email) {
+        document.getElementById("login-email-error").classList.add('show');
+        document.getElementById("login-email").classList.add('input-error');
+        hasError = true;
+      }
+
+      // Validazione password
+      if (!password) {
+        document.getElementById("login-password-error").classList.add('show');
+        document.getElementById("login-password").classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) {
+        return;
+      }
+
+      alert("✅ Accesso effettuato con successo!");
+      window.location.href = "preview.html";
     }
   </script>
 </body>

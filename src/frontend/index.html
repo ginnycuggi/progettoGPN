@@ -4,26 +4,545 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Scambio di SchemiGPN</title>
-  <link rel="stylesheet" href="style.css">
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
-  <!-- CSS minimo SOLO per il popup -->
   <style>
+    /* ===== RESET E BASE ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* ===== CONTAINER PRINCIPALE ===== */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ===== TITOLO ===== */
+    h1 {
+      text-align: center;
+      color: #667eea;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      color: #764ba2;
+      margin-bottom: 15px;
+      font-size: 1.8em;
+    }
+
+    /* ===== SEZIONE RICERCA ===== */
+    .search-section {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .search-bar {
+      width: 100%;
+      padding: 15px 20px;
+      font-size: 1.1em;
+      border: 2px solid #667eea;
+      border-radius: 50px;
+      margin-bottom: 15px;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-bar:focus {
+      outline: none;
+      border-color: #764ba2;
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.3);
+      transform: scale(1.02);
+    }
+
+    .search-section input[type="text"],
+    .search-section select {
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+      transition: all 0.3s ease;
+      background: white;
+    }
+
+    .search-section input[type="text"]:focus,
+    .search-section select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+    }
+
+    .search-section button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .search-section button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+    }
+
+    .search-section button:active {
+      transform: translateY(0);
+    }
+
+    /* ===== ACCOUNT LINK ===== */
+    .account-link {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .register-button {
+      display: inline-block;
+      padding: 12px 30px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    .register-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.6);
+    }
+
+    /* ===== SEZIONE OPZIONI ===== */
+    .container > p {
+      text-align: center;
+      font-size: 1.2em;
+      color: #666;
+      margin: 30px 0;
+    }
+
+    .option {
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      padding: 30px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .option:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .option p {
+      color: #555;
+      margin-bottom: 20px;
+      font-size: 1.05em;
+    }
+
+    .option input[type="file"],
+    .option input[type="text"],
+    .option select {
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 15px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .option input[type="file"] {
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .option input[type="text"]:focus,
+    .option select:focus {
+      outline: none;
+      border-color: #f5576c;
+      box-shadow: 0 0 10px rgba(245, 87, 108, 0.2);
+    }
+
+    .option button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(250, 112, 154, 0.4);
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .option button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(250, 112, 154, 0.6);
+    }
+
+    .option button:active {
+      transform: translateY(0);
+    }
+
+    /* ===== SCHEMI CARICATI ===== */
+    #uploadedSchemas {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .schema-box {
+      background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .schema-box:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      border-color: #667eea;
+    }
+
+    .schema-box strong {
+      display: block;
+      color: #333;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .schema-box em {
+      display: block;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .schema-box small {
+      display: block;
+      color: #777;
+      font-size: 0.9em;
+    }
+
+    /* ===== STELLE DI VALUTAZIONE ===== */
+    .stars {
+      margin-top: 15px;
+      font-size: 1.5em;
+    }
+
+    .star {
+      cursor: pointer;
+      color: #ddd;
+      transition: all 0.2s ease;
+      display: inline-block;
+    }
+
+    .star:hover,
+    .star.selected {
+      color: #ffd700;
+      transform: scale(1.2);
+    }
+
+    /* ===== MODAL ===== */
     .modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      animation: fadeIn 0.3s ease-in;
     }
+
     .modal-content {
       background: white;
-      padding: 20px;
-      max-width: 500px;
+      padding: 40px;
+      max-width: 600px;
       width: 90%;
-      border-radius: 8px;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-content h2 {
+      color: #667eea;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    #modalResults {
+      margin-bottom: 20px;
+    }
+
+    #noResults {
+      background: #fff3cd;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #ffc107;
+      margin-bottom: 20px;
+    }
+
+    #noResults p {
+      color: #856404;
+      margin-bottom: 15px;
+    }
+
+    #noResults input,
+    #noResults select {
+      width: 100%;
+      padding: 12px 20px;
+      margin-bottom: 10px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1em;
+    }
+
+    #noResults button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    #noResults button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .modal-content > button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .modal-content > button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    /* ===== SCHEMA GENERATO ===== */
+    .generated-schema {
+      background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      border: 2px solid #00acc1;
+    }
+
+    .generated-schema h3 {
+      color: #006064;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .generated-schema pre {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      line-height: 1.6;
+      color: #333;
+      border: 1px solid #ddd;
+    }
+
+    .generated-schema button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+    }
+
+    .generated-schema button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+    }
+
+    /* ===== SCROLLBAR PERSONALIZZATA ===== */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      h2 {
+        font-size: 1.4em;
+      }
+
+      #uploadedSchemas {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        padding: 25px;
+        width: 95%;
+      }
+
+      .search-section,
+      .option {
+        padding: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .container {
+        padding: 15px;
+        border-radius: 15px;
+      }
+    }
+
+    /* ===== ANIMAZIONI AGGIUNTIVE ===== */
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* ===== UTILITY CLASSES ===== */
+    .hidden {
+      display: none !important;
+    }
+
+    /* ===== MESSAGGI DI ERRORE ===== */
+    .error-message {
+      color: #dc3545;
+      font-size: 0.9em;
+      margin-top: -10px;
+      margin-bottom: 10px;
+      font-weight: 600;
+      display: none;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .input-error {
+      border-color: #dc3545 !important;
+      animation: shake 0.3s ease-in-out;
     }
   </style>
 </head>
@@ -34,6 +553,7 @@
 
     <!-- RICERCA -->
     <form class="search-section" onsubmit="event.preventDefault(); handleSearch()">
+      <input type="text" id="searchInput" placeholder="🔍 Cerca uno schema..." class="search-bar">
       <input type="text" id="materiaSearch" placeholder="Materia (es. Matematica)">
       <input type="text" id="argomentoSearch" placeholder="Argomento (es. Equazioni)">
       <select id="annoSearch">
@@ -53,19 +573,21 @@
         <option>Scuola Secondaria II Grado - 5ª</option>
         <option>Università</option>
       </select>
-      <button type="submit">Cerca</button>
+      <div class="error-message" id="searchError">⚠️ Compila almeno un campo per effettuare la ricerca</div>
+      <button type="submit">🔍 Cerca</button>
     </form>
 
     <div class="account-link">
-      <a href="#" class="register-button">👤 Crea un account</a>
+      <a href="registrazione.html" class="register-button">👤 Crea un account</a>
     </div>
 
     <p>Scegli come accedere alla piattaforma:</p>
 
+    <!-- ABBONAMENTO -->
     <div class="option">
       <h2>Abbonamento</h2>
-      <p>Accedi pagando una quota mensile</p>
-      <button onclick="alert('Funzione pagamento in arrivo!')">Paga ora</button>
+      <p>Accedi a tutti gli schemi disponibili con un abbonamento mensile</p>
+      <button onclick="window.location.href='paga.html'">💳 Paga ora</button>
     </div>
 
     <!-- SCAMBIO -->
@@ -74,7 +596,10 @@
       <p>Carica uno schema valido per poter ritirarne un altro</p>
 
       <input type="text" id="materia" placeholder="Materia (es. Matematica)">
+      <div class="error-message" id="materiaError">⚠️ Inserisci la materia</div>
+      
       <input type="text" id="argomento" placeholder="Argomento (es. Equazioni)">
+      <div class="error-message" id="argomentoError">⚠️ Inserisci l'argomento</div>
 
       <select id="annoScolastico">
         <option value="">Seleziona anno scolastico</option>
@@ -93,15 +618,54 @@
         <option>Scuola Secondaria II Grado - 5ª</option>
         <option>Università</option>
       </select>
+      <div class="error-message" id="annoError">⚠️ Seleziona l'anno scolastico</div>
 
-      <input type="file" id="schemaUpload"
-        accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.txt">
+      <input type="file" id="schemaUpload" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.txt">
+      <div class="error-message" id="fileError">⚠️ Seleziona un file da caricare</div>
 
       <button onclick="handleUpload()">Carica Schema</button>
     </div>
 
     <!-- SCHEMI CARICATI -->
-    <div id="uploadedSchemas"></div>
+    <div id="uploadedSchemas">
+      <!-- Schemi di esempio per testare la ricerca -->
+      <div class="schema-box" data-materia="matematica" data-argomento="equazioni" data-anno="scuola secondaria ii grado - 3ª">
+        <strong>Schema_Equazioni_2024.pdf</strong><br>
+        <em>Matematica – Equazioni</em><br>
+        <small>Scuola Secondaria II Grado - 3ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star selected" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      </div>
+      <div class="schema-box" data-materia="storia" data-argomento="rivoluzione francese" data-anno="scuola secondaria i grado - 3ª">
+        <strong>Rivoluzione_Francese.docx</strong><br>
+        <em>Storia – Rivoluzione Francese</em><br>
+        <small>Scuola Secondaria I Grado - 3ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star selected" data-value="4">&#9733;</span>
+          <span class="star selected" data-value="5">&#9733;</span>
+        </div>
+      </div>
+      <div class="schema-box" data-materia="scienze" data-argomento="fotosintesi" data-anno="scuola primaria - 5ª">
+        <strong>Fotosintesi_Clorofilliana.pdf</strong><br>
+        <em>Scienze – Fotosintesi</em><br>
+        <small>Scuola Primaria - 5ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- MODAL RICERCA -->
@@ -115,7 +679,11 @@
         <p>❌ Nessuno schema trovato.</p>
         <p>Inserisci i dettagli per generare uno schema:</p>
         <input type="text" id="genMateria" placeholder="Materia (es. Matematica)">
+        <div class="error-message" id="genMateriaError">⚠️ Inserisci la materia</div>
+        
         <input type="text" id="genArgomento" placeholder="Argomento (es. Equazioni)">
+        <div class="error-message" id="genArgomentoError">⚠️ Inserisci l'argomento</div>
+        
         <select id="genAnno">
           <option value="">Seleziona anno scolastico</option>
           <option>Scuola Primaria - 1ª</option>
@@ -133,6 +701,8 @@
           <option>Scuola Secondaria II Grado - 5ª</option>
           <option>Università</option>
         </select>
+        <div class="error-message" id="genAnnoError">⚠️ Seleziona l'anno scolastico</div>
+        
         <button onclick="generateSchema()">Genera</button>
       </div>
 
@@ -141,6 +711,26 @@
   </div>
 
   <script>
+    // Inizializza stelle negli schemi di esempio
+    document.addEventListener('DOMContentLoaded', function() {
+      const exampleSchemas = document.querySelectorAll('#uploadedSchemas .schema-box');
+      exampleSchemas.forEach(schema => {
+        const stars = schema.querySelectorAll('.star');
+        stars.forEach(star => {
+          star.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const rating = parseInt(star.getAttribute('data-value'));
+            stars.forEach(s => {
+              s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= rating);
+            });
+            const fileName = schema.querySelector('strong').textContent;
+            alert(`Hai dato ${rating} stelle a "${fileName}"`);
+          });
+        });
+      });
+    });
+
+    // GESTIONE UPLOAD
     function handleUpload() {
       const fileInput = document.getElementById("schemaUpload");
       const materia = document.getElementById("materia").value.trim();
@@ -148,12 +738,57 @@
       const anno = document.getElementById("annoScolastico").value;
       const container = document.getElementById("uploadedSchemas");
 
-      if (!fileInput.files.length || !materia || !argomento || !anno) {
-        alert("Compila tutti i campi e seleziona un file.");
+      // Reset errori precedenti
+      document.getElementById("materiaError").classList.remove("show");
+      document.getElementById("argomentoError").classList.remove("show");
+      document.getElementById("annoError").classList.remove("show");
+      document.getElementById("fileError").classList.remove("show");
+      document.getElementById("materia").classList.remove("input-error");
+      document.getElementById("argomento").classList.remove("input-error");
+      document.getElementById("annoScolastico").classList.remove("input-error");
+      document.getElementById("schemaUpload").classList.remove("input-error");
+
+      let hasError = false;
+
+      // Validazione campi
+      if (!materia) {
+        document.getElementById("materiaError").classList.add("show");
+        document.getElementById("materia").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!argomento) {
+        document.getElementById("argomentoError").classList.add("show");
+        document.getElementById("argomento").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!anno) {
+        document.getElementById("annoError").classList.add("show");
+        document.getElementById("annoScolastico").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!fileInput.files.length) {
+        document.getElementById("fileError").classList.add("show");
+        document.getElementById("schemaUpload").classList.add("input-error");
+        hasError = true;
+      }
+
+      // Se ci sono errori, non procedere
+      if (hasError) {
         return;
       }
 
       const file = fileInput.files[0];
+
+      // Validazione dimensione file (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        document.getElementById("fileError").textContent = "⚠️ Il file supera i 5MB";
+        document.getElementById("fileError").classList.add("show");
+        document.getElementById("schemaUpload").classList.add("input-error");
+        return;
+      }
 
       const box = document.createElement("div");
       box.className = "schema-box";
@@ -165,16 +800,40 @@
         <strong>${file.name}</strong><br>
         <em>${materia} – ${argomento}</em><br>
         <small>${anno}</small>
+        <div class="stars">
+          <span class="star" data-value="1">&#9733;</span>
+          <span class="star" data-value="2">&#9733;</span>
+          <span class="star" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
       `;
 
       container.appendChild(box);
 
+      // Aggiungi funzionalità stelle
+      const stars = box.querySelectorAll('.star');
+      stars.forEach(star => {
+        star.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const rating = parseInt(star.getAttribute('data-value'));
+          stars.forEach(s => {
+            s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= rating);
+          });
+          alert(`Hai dato ${rating} stelle a "${file.name}"`);
+        });
+      });
+
+      // Reset form
       fileInput.value = "";
       document.getElementById("materia").value = "";
       document.getElementById("argomento").value = "";
       document.getElementById("annoScolastico").value = "";
+
+      alert("Schema caricato con successo!");
     }
 
+    // GESTIONE RICERCA
     function handleSearch() {
       const materia = document.getElementById("materiaSearch").value.trim().toLowerCase();
       const argomento = document.getElementById("argomentoSearch").value.trim().toLowerCase();
@@ -184,12 +843,16 @@
       const noResults = document.getElementById("noResults");
       const modal = document.getElementById("searchModal");
       const schemi = document.querySelectorAll(".schema-box");
+      const searchError = document.getElementById("searchError");
+
+      // Reset errore precedente
+      searchError.classList.remove("show");
 
       results.innerHTML = "";
       noResults.style.display = "none";
 
       if (!materia && !argomento && !anno) {
-        alert("Inserisci almeno un campo da cercare.");
+        searchError.classList.add("show");
         return;
       }
 
@@ -213,17 +876,48 @@
       modal.style.display = "flex";
     }
 
+    // CHIUDI MODAL
     function closeModal() {
       document.getElementById("searchModal").style.display = "none";
     }
 
+    // GENERA SCHEMA AI
     async function generateSchema() {
       const materia = document.getElementById("genMateria").value.trim();
       const argomento = document.getElementById("genArgomento").value.trim();
       const anno = document.getElementById("genAnno").value.trim();
 
-      if (!materia || !argomento || !anno) {
-        alert("Compila tutti i campi per generare lo schema.");
+      // Reset errori precedenti
+      document.getElementById("genMateriaError").classList.remove("show");
+      document.getElementById("genArgomentoError").classList.remove("show");
+      document.getElementById("genAnnoError").classList.remove("show");
+      document.getElementById("genMateria").classList.remove("input-error");
+      document.getElementById("genArgomento").classList.remove("input-error");
+      document.getElementById("genAnno").classList.remove("input-error");
+
+      let hasError = false;
+
+      // Validazione campi
+      if (!materia) {
+        document.getElementById("genMateriaError").classList.add("show");
+        document.getElementById("genMateria").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!argomento) {
+        document.getElementById("genArgomentoError").classList.add("show");
+        document.getElementById("genArgomento").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!anno) {
+        document.getElementById("genAnnoError").classList.add("show");
+        document.getElementById("genAnno").classList.add("input-error");
+        hasError = true;
+      }
+
+      // Se ci sono errori, non procedere
+      if (hasError) {
         return;
       }
 
@@ -242,11 +936,16 @@
       // Mostra lo schema
       const schemaDiv = document.createElement("div");
       schemaDiv.className = "generated-schema";
-      schemaDiv.innerHTML = `<h3>Schema Generato per ${materia} - ${argomento} (${anno})</h3><pre id="schemaText">${schema}</pre><button onclick="downloadSchema()">Scarica come Immagine</button>`;
+      schemaDiv.innerHTML = `
+        <h3>Schema Generato per ${materia} - ${argomento} (${anno})</h3>
+        <pre id="schemaText">${schema}</pre>
+        <button onclick="downloadSchema()">Scarica come Immagine</button>
+      `;
       results.innerHTML = "";
       results.appendChild(schemaDiv);
     }
 
+    // RICERCA WIKIPEDIA
     async function searchWikipedia(query) {
       try {
         const response = await fetch(`https://it.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
@@ -257,16 +956,7 @@
       }
     }
 
-    function downloadSchema() {
-      const schemaDiv = document.querySelector('.generated-schema');
-      html2canvas(schemaDiv).then(canvas => {
-        const link = document.createElement('a');
-        link.download = 'schema.png';
-        link.href = canvas.toDataURL();
-        link.click();
-      });
-    }
-
+    // GENERA SCHEMA CON AI
     function generateAISchema(materia, argomento, anno, info) {
       let schema = `Schema per la materia: ${materia}\nArgomento: ${argomento}\nAnno Scolastico: ${anno}\n\n`;
 
@@ -303,8 +993,8 @@
       return schema;
     }
 
+    // SINTETIZZA INFORMAZIONI
     function sintetizzaInfo(info) {
-      // Sintesi semplice: estrai prime frasi
       const sentences = info.split('.').slice(0, 3);
       return {
         definizione: sentences[0] || '',
@@ -313,46 +1003,22 @@
       };
     }
 
+    // DETERMINA LIVELLO
     function getLivello(anno) {
       if (anno.includes('Primaria')) return 'base';
       if (anno.includes('Secondaria I Grado')) return 'medio';
       return 'avanzato';
     }
 
-    async function searchWikipedia(query) {
-      try {
-        const response = await fetch(`https://it.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
-        const data = await response.json();
-        return data.extract || "Informazioni non trovate.";
-      } catch (e) {
-        return "Errore nella ricerca.";
-      }
-    }
-
-    function generateAISchema(materia, argomento, anno, info) {
-      let schema = `Schema per la materia: ${materia}\nArgomento: ${argomento}\nAnno Scolastico: ${anno}\n\n`;
-
-      schema += "Informazioni chiave da fonti online:\n";
-      schema += info + "\n\n";
-
-      schema += "1. Introduzione\n";
-      schema += `   - Definizione di ${argomento} in ${materia}\n`;
-      schema += "   - Importanza dell'argomento\n\n";
-
-      schema += "2. Sviluppo\n";
-      schema += `   - Concetti chiave relativi a ${argomento}\n`;
-      schema += "   - Esempi pratici\n";
-      schema += "   - Applicazioni nel contesto scolastico\n\n";
-
-      schema += "3. Conclusione\n";
-      schema += "   - Riassunto dei punti principali\n";
-      schema += "   - Riflessioni finali\n\n";
-
-      schema += "Risorse aggiuntive:\n";
-      schema += "- Libri di testo\n";
-      schema += "- Esercizi online\n";
-
-      return schema;
+    // DOWNLOAD SCHEMA COME IMMAGINE
+    function downloadSchema() {
+      const schemaDiv = document.querySelector('.generated-schema');
+      html2canvas(schemaDiv).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'schema.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      });
     }
   </script>
 </body>
