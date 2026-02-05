@@ -35,7 +35,7 @@ Questa è un'applicazione web frontend / backend con lo scopo di condividere sch
   Carte prepagate e wallet locali 
 
   
-![Schema Esempio](https://www.blogdidattico.it/wp-content/uploads/2021/07/SECONDAGUERRAMONDIALEmappescuola-scaled.jpg)
+![Schema Esempio](https://upload.wikimedia.org/wikipedia/commons/c/c7/Mappaconcettuale.jpg)
 
 # frontend
 Il frontend è sviluppato utilizzando HTML, CSS, Javascript. Entrare nella cartella per frontend e utilizzare qualsisi Http server per visualizzare l'applicazione (es. static hosting 8000 port):
