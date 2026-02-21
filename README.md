@@ -39,9 +39,6 @@ Questa è un'applicazione web frontend / backend con lo scopo di condividere sch
 
 # frontend
 Il frontend è sviluppato utilizzando HTML, CSS, Javascript. Entrare nella cartella per frontend e utilizzare qualsisi Http server per visualizzare l'applicazione (es. static hosting 8000 port):
-Durante i mesi di gennaio e febbraio si predispongono i seguenti cambiamenti:
-- Il file di CSS è stato reintragro in ogni singola pagina così da permettere una comprensione migliore. 
-- Bisogna migliorare la parte di visualizzazione del sito e integrare la parte che permette di visualizzare il sito anche da duispositivi mobili. Inoltre sono state aggiunte nuove funzioni in JavaScript.
 
 ```bash
 python -m http.server 8000
@@ -49,5 +46,3 @@ python -m http.server 8000
 
 # backend
 Il backend è sviluppato utilizzando php, js e xampp per la creazione dei database.
-Durante i mesi di gennaio e febbraio si predispongono i seguenti cambiamenti:
-- La parte di Backend è ancora da aggiornare, è stato creato il database che attualemente risulta vuoto e privo di schemi che varranno aggiunti prossimamente.
