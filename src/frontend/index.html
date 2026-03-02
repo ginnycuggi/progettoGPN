@@ -544,6 +544,108 @@
       border-color: #dc3545 !important;
       animation: shake 0.3s ease-in-out;
     }
+
+    /* ===== COOKIE BANNER ===== */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+      z-index: 999;
+      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .cookie-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: white;
+    }
+
+    .cookie-content p {
+      margin: 0;
+      font-size: 1em;
+      flex: 1;
+    }
+
+    .cookie-content a {
+      color: #ffd700;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .cookie-content a:hover {
+      text-decoration: underline;
+    }
+
+    .cookie-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-minimal,
+    .btn-primary {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1em;
+    }
+
+    .btn-minimal {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-minimal:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(245, 87, 108, 0.6);
+    }
+
+    .btn-primary:active,
+    .btn-minimal:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .cookie-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .cookie-buttons {
+        width: 100%;
+      }
+
+      .btn-minimal,
+      .btn-primary {
+        width: 100%;
+        text-align: center;
+      }
+    }
   </style>
 </head>
 
@@ -1021,5 +1123,99 @@
       });
     }
   </script>
+
+  
+
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+      <div class="cookie-content">
+        <p>We use cookies for essential functions and analytics. 
+          <a href="privacy.html">Privacy Policy</a>
+        </p>
+        <div class="cookie-buttons">
+          <button id="accept-essential" class="btn-minimal">Essential Only</button>
+          <button id="accept-all" class="btn-primary">Accept All</button>
+        </div>
+      </div>
+    </div>
+
+     <script type="module">
+
+      // Cookie manager
+      const CookieManager = {
+
+        init() {
+          // Check if consent already given
+          if (!this.getConsent()) {
+            this.showBanner()
+          }
+          this.setupListeners()
+          this.applyConsent(this.getConsent())
+        },
+        
+        showBanner() {
+          document.getElementById('cookie-banner').style.display = 'block'
+        },
+        
+        hideBanner() {
+          document.getElementById('cookie-banner').style.display = 'none'
+        },
+        
+        setupListeners() {
+          document.getElementById('accept-essential').addEventListener('click', () => {
+            this.saveConsent({ essential: true, analytics: false, marketing: false })
+            this.hideBanner()
+          });
+          
+          document.getElementById('accept-all').addEventListener('click', () => {
+            this.saveConsent({ essential: true, analytics: true, marketing: false })
+            this.hideBanner()
+            this.enableAnalytics() // Enable Firebase Analytics if needed
+          });
+        },
+        
+        saveConsent(consent) {
+          localStorage.setItem('cookieConsent', JSON.stringify({
+            ...consent,
+            timestamp: new Date().toISOString()
+          }))
+        },
+        
+        getConsent() {
+          const saved = localStorage.getItem('cookieConsent')
+          return saved ? JSON.parse(saved) : null
+        },
+        
+        applyConsent(consent) {
+          if (!consent) return
+          
+          // Block analytics if not consented
+          if (!consent.analytics) {
+            this.blockAnalytics()
+          }
+        },
+        
+        blockAnalytics() {
+          // Disable Firebase Analytics
+          if (typeof window !== 'undefined') {
+            window['ga-disable-UA-XXXXX-Y'] = true // Your GA ID
+          }
+        },
+        
+        enableAnalytics() {
+          // Initialize Firebase Analytics only if consented
+          if (typeof firebase !== 'undefined' && firebase.analytics) {
+            firebase.analytics()
+          }
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', (e) => {
+        console.log('@DOM >> Ready')
+
+        CookieManager.init()
+      })
+
+    </script>
+
 </body>
 </html>
