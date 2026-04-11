@@ -2,7 +2,7 @@ progettoGPN
 ===========
 [TOC]
 
-v0.0.4 5/02/26
+v0.7.0 11/04/26
 
 Componenti progettoGPN:
 
@@ -46,3 +46,6 @@ python -m http.server 8000
 
 # backend
 Il backend è sviluppato utilizzando php, js e xampp per la creazione dei database.
+
+# AI Funzionalità
+
