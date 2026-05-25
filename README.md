@@ -2,7 +2,7 @@ progettoGPN
 ===========
 [TOC]
 
-v0.7.0 11/04/26
+v0.8.0 25/05/26
 
 Componenti progettoGPN:
 
