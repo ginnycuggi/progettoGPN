@@ -2,7 +2,7 @@ Studio di Fattibilità - SchemiGPN
 =======================================
 [TOC]
 
-v0.0.1 - 05/10/25
+v8.0.0 - 25/05/26
 **Redatto da:** Noemi Brusa, Paola Calegari, Ginevra Guidi
 
 # Sommario Esecutivo
