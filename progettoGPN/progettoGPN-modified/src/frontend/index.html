@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scambio di SchemiGPN</title>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Benvenuto su Scambio di SchemiGPN</h1>
+
+    <!-- RICERCA -->
+    <form class="search-section" onsubmit="handleSearch(event)">
+      <input type="text" id="materiaSearch" placeholder="Materia (es. Matematica)">
+      <input type="text" id="argomentoSearch" placeholder="Argomento (es. Equazioni)">
+      <select id="annoSearch">
+        <option value="">Seleziona anno scolastico</option>
+        <option>Scuola Primaria - 1ª</option>
+        <option>Scuola Primaria - 2ª</option>
+        <option>Scuola Primaria - 3ª</option>
+        <option>Scuola Primaria - 4ª</option>
+        <option>Scuola Primaria - 5ª</option>
+        <option>Scuola Secondaria I Grado - 1ª</option>
+        <option>Scuola Secondaria I Grado - 2ª</option>
+        <option>Scuola Secondaria I Grado - 3ª</option>
+        <option>Scuola Secondaria II Grado - 1ª</option>
+        <option>Scuola Secondaria II Grado - 2ª</option>
+        <option>Scuola Secondaria II Grado - 3ª</option>
+        <option>Scuola Secondaria II Grado - 4ª</option>
+        <option>Scuola Secondaria II Grado - 5ª</option>
+        <option>Università</option>
+      </select>
+      <div class="error-message" id="searchError">⚠️ Compila almeno un campo per effettuare la ricerca</div>
+      <button type="submit">🔍 Cerca</button>
+    </form>
+
+    <div class="account-link">
+      <a href="registrazione.html" class="register-button">👤 Crea un account</a>
+    </div>
+
+    <p>Scegli come accedere alla piattaforma:</p>
+
+    <!-- ABBONAMENTO -->
+    <div class="option">
+      <h2>Abbonamento</h2>
+      <p>Accedi a tutti gli schemi disponibili con un abbonamento mensile</p>
+      <button onclick="window.location.href='paga.html'">💳 Paga ora</button>
+    </div>
+
+    <!-- SCAMBIO -->
+    <div class="option">
+      <h2>Scambio</h2>
+      <p>Carica uno schema valido per poter ritirarne un altro</p>
+      <input type="text" id="materia" placeholder="Materia (es. Matematica)">
+      <div class="error-message" id="materiaError">⚠️ Inserisci la materia</div>
+      
+      <input type="text" id="argomento" placeholder="Argomento (es. Equazioni)">
+      <div class="error-message" id="argomentoError">⚠️ Inserisci l'argomento</div>
+
+      <select id="annoScolastico">
+        <option value="">Seleziona anno scolastico</option>
+        <option>Scuola Primaria - 1ª</option>
+        <option>Scuola Primaria - 2ª</option>
+        <option>Scuola Primaria - 3ª</option>
+        <option>Scuola Primaria - 4ª</option>
+        <option>Scuola Primaria - 5ª</option>
+        <option>Scuola Secondaria I Grado - 1ª</option>
+        <option>Scuola Secondaria I Grado - 2ª</option>
+        <option>Scuola Secondaria I Grado - 3ª</option>
+        <option>Scuola Secondaria II Grado - 1ª</option>
+        <option>Scuola Secondaria II Grado - 2ª</option>
+        <option>Scuola Secondaria II Grado - 3ª</option>
+        <option>Scuola Secondaria II Grado - 4ª</option>
+        <option>Scuola Secondaria II Grado - 5ª</option>
+        <option>Università</option>
+      </select>
+      <div class="error-message" id="annoError">⚠️ Seleziona l'anno scolastico</div>
+
+      <input type="file" id="schemaUpload" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.ppt,.pptx,.txt">
+      <div class="error-message" id="fileError">⚠️ Seleziona un file da caricare</div>
+
+      <button onclick="handleUpload()">Carica Schema</button>
+    </div>
+
+    <!-- SCHEMI CARICATI -->
+    <div id="uploadedSchemas">
+      <!-- Schemi di esempio per testare la ricerca -->
+      <div class="schema-box" data-materia="matematica" data-argomento="equazioni" data-anno="scuola secondaria ii grado - 3ª">
+        <strong>Schema_Equazioni_2024.pdf</strong><br>
+        <em>Matematica – Equazioni</em><br>
+        <small>Scuola Secondaria II Grado - 3ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star selected" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      </div>
+      <div class="schema-box" data-materia="storia" data-argomento="rivoluzione francese" data-anno="scuola secondaria i grado - 3ª">
+        <strong>Rivoluzione_Francese.docx</strong><br>
+        <em>Storia – Rivoluzione Francese</em><br>
+        <small>Scuola Secondaria I Grado - 3ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star selected" data-value="4">&#9733;</span>
+          <span class="star selected" data-value="5">&#9733;</span>
+        </div>
+      </div>
+      <div class="schema-box" data-materia="scienze" data-argomento="fotosintesi" data-anno="scuola primaria - 5ª">
+        <strong>Fotosintesi_Clorofilliana.pdf</strong><br>
+        <em>Scienze – Fotosintesi</em><br>
+        <small>Scuola Primaria - 5ª</small>
+        <div class="stars">
+          <span class="star selected" data-value="1">&#9733;</span>
+          <span class="star selected" data-value="2">&#9733;</span>
+          <span class="star selected" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL RICERCA -->
+  <div id="searchModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Risultati ricerca</h2>
+
+      <div id="modalResults"></div>
+
+      <div id="noResults" style="display:none;">
+        <p>❌ Nessuno schema trovato.</p>
+        <p>Inserisci i dettagli per generare uno schema:</p>
+        <input type="text" id="genMateria" placeholder="Materia (es. Matematica)">
+        <div class="error-message" id="genMateriaError">⚠️ Inserisci la materia</div>
+        
+        <input type="text" id="genArgomento" placeholder="Argomento (es. Equazioni)">
+        <div class="error-message" id="genArgomentoError">⚠️ Inserisci l'argomento</div>
+        
+        <select id="genAnno">
+          <option value="">Seleziona anno scolastico</option>
+          <option>Scuola Primaria - 1ª</option>
+          <option>Scuola Primaria - 2ª</option>
+          <option>Scuola Primaria - 3ª</option>
+          <option>Scuola Primaria - 4ª</option>
+          <option>Scuola Primaria - 5ª</option>
+          <option>Scuola Secondaria I Grado - 1ª</option>
+          <option>Scuola Secondaria I Grado - 2ª</option>
+          <option>Scuola Secondaria I Grado - 3ª</option>
+          <option>Scuola Secondaria II Grado - 1ª</option>
+          <option>Scuola Secondaria II Grado - 2ª</option>
+          <option>Scuola Secondaria II Grado - 3ª</option>
+          <option>Scuola Secondaria II Grado - 4ª</option>
+          <option>Scuola Secondaria II Grado - 5ª</option>
+          <option>Università</option>
+        </select>
+        <div class="error-message" id="genAnnoError">⚠️ Seleziona l'anno scolastico</div>
+        
+        <button onclick="generateSchema()">Genera</button>
+      </div>
+
+      <button onclick="closeModal()">Chiudi</button>
+    </div>
+  </div>
+
+  <script>
+    // Inizializza stelle negli schemi di esempio
+    document.addEventListener('DOMContentLoaded', function() {
+      const exampleSchemas = document.querySelectorAll('#uploadedSchemas .schema-box');
+      exampleSchemas.forEach(schema => {
+        const stars = schema.querySelectorAll('.star');
+        stars.forEach(star => {
+          star.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const rating = parseInt(star.getAttribute('data-value'));
+            stars.forEach(s => {
+              s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= rating);
+            });
+            const fileName = schema.querySelector('strong').textContent;
+            alert(`Hai dato ${rating} stelle a "${fileName}"`);
+          });
+        });
+      });
+    });
+
+    // GESTIONE UPLOAD
+    function handleUpload() {
+      const fileInput = document.getElementById("schemaUpload");
+      const materia = document.getElementById("materia").value.trim();
+      const argomento = document.getElementById("argomento").value.trim();
+      const anno = document.getElementById("annoScolastico").value;
+      const container = document.getElementById("uploadedSchemas");
+
+      // Reset errori precedenti
+      document.getElementById("materiaError").classList.remove("show");
+      document.getElementById("argomentoError").classList.remove("show");
+      document.getElementById("annoError").classList.remove("show");
+      document.getElementById("fileError").classList.remove("show");
+      document.getElementById("materia").classList.remove("input-error");
+      document.getElementById("argomento").classList.remove("input-error");
+      document.getElementById("annoScolastico").classList.remove("input-error");
+      document.getElementById("schemaUpload").classList.remove("input-error");
+
+      let hasError = false;
+
+      // Validazione campi
+      if (!materia) {
+        document.getElementById("materiaError").classList.add("show");
+        document.getElementById("materia").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!argomento) {
+        document.getElementById("argomentoError").classList.add("show");
+        document.getElementById("argomento").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!anno) {
+        document.getElementById("annoError").classList.add("show");
+        document.getElementById("annoScolastico").classList.add("input-error");
+        hasError = true;
+      }
+
+      if (!fileInput.files.length) {
+        document.getElementById("fileError").classList.add("show");
+        document.getElementById("schemaUpload").classList.add("input-error");
+        hasError = true;
+      }
+
+      // Se ci sono errori, non procedere
+      if (hasError) {
+        return;
+      }
+
+      const file = fileInput.files[0];
+
+      // Validazione dimensione file (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        document.getElementById("fileError").textContent = "⚠️ Il file supera i 5MB";
+        document.getElementById("fileError").classList.add("show");
+        document.getElementById("schemaUpload").classList.add("input-error");
+        return;
+      }
+
+      const box = document.createElement("div");
+      box.className = "schema-box";
+      box.setAttribute("data-materia", materia.toLowerCase());
+      box.setAttribute("data-argomento", argomento.toLowerCase());
+      box.setAttribute("data-anno", anno.toLowerCase());
+
+      box.innerHTML = `
+        <strong>${file.name}</strong><br>
+        <em>${materia} – ${argomento}</em><br>
+        <small>${anno}</small>
+        <div class="stars">
+          <span class="star" data-value="1">&#9733;</span>
+          <span class="star" data-value="2">&#9733;</span>
+          <span class="star" data-value="3">&#9733;</span>
+          <span class="star" data-value="4">&#9733;</span>
+          <span class="star" data-value="5">&#9733;</span>
+        </div>
+      `;
+
+      container.appendChild(box);
+
+      // Aggiungi funzionalità stelle
+      const stars = box.querySelectorAll('.star');
+      stars.forEach(star => {
+        star.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const rating = parseInt(star.getAttribute('data-value'));
+          stars.forEach(s => {
+            s.classList.toggle('selected', parseInt(s.getAttribute('data-value')) <= rating);
+          });
+          alert(`Hai dato ${rating} stelle a "${file.name}"`);
+        });
+      });
+
+      // Reset form
+      fileInput.value = "";
+      document.getElementById("materia").value = "";
+      document.getElementById("argomento").value = "";
+      document.getElementById("annoScolastico").value = "";
+
+      alert("Schema caricato con successo!");
+    }
+
+    // GESTIONE RICERCA
+    async function handleSearch(event) {
+      if (event && typeof event.preventDefault === 'function') {
+        event.preventDefault();
+      }
+      const materia = document.getElementById("materiaSearch").value.trim().toLowerCase();
+      const argomento = document.getElementById("argomentoSearch").value.trim().toLowerCase();
+      const anno = document.getElementById("annoSearch").value.trim().toLowerCase();
+
+      const results = document.getElementById("modalResults");
+      const noResults = document.getElementById("noResults");
+      const modal = document.getElementById("searchModal");
+      const schemi = document.querySelectorAll(".schema-box");
+      const searchError = document.getElementById("searchError");
+
+      // Reset errore precedente
+      searchError.classList.remove("show");
+
+      results.innerHTML = "";
+      noResults.style.display = "none";
+      noResults.innerHTML = "";
+
+      if (!materia && !argomento && !anno) {
+        searchError.classList.add("show");
+        return;
+      }
+
+      let trovati = 0;
+
+      schemi.forEach(schema => {
+        const matchMateria = !materia || schema.dataset.materia.includes(materia);
+        const matchArgomento = !argomento || schema.dataset.argomento.includes(argomento);
+        const matchAnno = !anno || schema.dataset.anno.includes(anno);
+
+        if (matchMateria && matchArgomento && matchAnno) {
+          results.appendChild(schema.cloneNode(true));
+          trovati++;
+        }
+      });
+
+      if (trovati === 0) {
+        if (materia && argomento && anno) {
+          await fallbackSearchGenerate(materia, argomento, anno, results, noResults);
+        } else {
+          noResults.style.display = "block";
+          noResults.innerHTML = `
+            <p>❌ Nessuno schema trovato.</p>
+            <p>Per generare uno schema, compila anche tutti i campi: materia, argomento e anno.</p>
+          `;
+        }
+      }
+
+      modal.style.display = "flex";
+    }
+
+    // CHIUDI MODAL
+    function closeModal() {
+      document.getElementById("searchModal").style.display = "none";
+    }
+
+    async function fetchJSON(url, options = {}) {
+      if (window.location.protocol === 'file:') {
+        throw new Error('Apri questa pagina con un server locale (http://localhost/...) perché il backend PHP non funziona con file://');
+      }
+      const response = await fetch(url, options);
+      const text = await response.text();
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status} ${response.statusText} - ${text.slice(0, 250)}`);
+      }
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        throw new Error(`Risposta non valida da ${url}: ${text.slice(0, 250)}`);
+      }
+    }
+
+    async function fallbackSearchGenerate(materia, argomento, anno, results, noResults) {
+      noResults.style.display = "none";
+      results.innerHTML = "<p>⏳ Nessuno schema locale trovato, genero uno schema attinente... 🤖</p>";
+
+      try {
+        const apiUrl = new URL("../backend/api/generate_schema.php", window.location.href).href;
+        const data = await fetchJSON(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ materia, argomento, anno, formato: "json" })
+        });
+
+        if (!data.success) {
+          results.innerHTML = `<p>❌ Errore: ${data.error || (data.errors || []).join(", ")}</p>`;
+          return;
+        }
+
+        const cleanedSchema = cleanSchemaText(data.schema);
+        _ultimoSchema = { materia, argomento, anno, text: cleanedSchema };
+        const mEnc = encodeURIComponent(materia);
+        const aEnc = encodeURIComponent(argomento);
+        const nEnc = encodeURIComponent(anno);
+
+        const schemaDiv = document.createElement("div");
+        schemaDiv.className = "generated-schema";
+        schemaDiv.innerHTML = `
+          <h3>Schema generato per ${data.materia} — ${data.argomento} (${data.anno})</h3>
+          <small style="color:#888">Fonte: ${data.fonte_wiki}</small>
+          <pre id="schemaText">${escapeHtml(cleanedSchema)}</pre>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button onclick="downloadSchemaPDF('${mEnc}','${aEnc}','${nEnc}')">
+              📄 Scarica (Ctrl+P → Salva PDF)
+            </button>
+            <button onclick="downloadSchemaImmagine()">
+              🖼️ Scarica Schema come Immagine
+            </button>
+            <button onclick="mostraMappaConcettuale('${mEnc}','${aEnc}','${nEnc}', _ultimoSchema.text)"
+              style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border:none;
+                     padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;
+                     font-size:13px;box-shadow:0 2px 8px rgba(99,102,241,.4);">
+              🗺️ Schema Logico
+            </button>
+          </div>
+        `;
+
+        results.innerHTML = "";
+        results.appendChild(schemaDiv);
+
+        if (!document.getElementById("mappaContainer")) {
+          const mapDiv = document.createElement("div");
+          mapDiv.id = "mappaContainer";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          results.parentNode.insertBefore(mapDiv, results.nextSibling);
+        }
+      } catch (err) {
+        results.innerHTML = `<p>❌ Errore di rete: ${err.message}</p>`;
+      }
+    }
+
+    // ── VARIABILE GLOBALE schema corrente ──────────────────────────────────
+    let _ultimoSchema = { materia: "", argomento: "", anno: "", text: "" };
+
+    // ── GENERA SCHEMA AI ────────────────────────────────────────────────────
+    async function generateSchema() {
+      const materia   = document.getElementById("genMateria").value.trim();
+      const argomento = document.getElementById("genArgomento").value.trim();
+      const anno      = document.getElementById("genAnno").value.trim();
+
+      // Reset errori precedenti
+      ["genMateria","genArgomento","genAnno"].forEach(id => {
+        document.getElementById(id + "Error").classList.remove("show");
+        document.getElementById(id).classList.remove("input-error");
+      });
+
+      let hasError = false;
+      if (!materia)   { document.getElementById("genMateriaError").classList.add("show");   document.getElementById("genMateria").classList.add("input-error");   hasError = true; }
+      if (!argomento) { document.getElementById("genArgomentoError").classList.add("show"); document.getElementById("genArgomento").classList.add("input-error"); hasError = true; }
+      if (!anno)      { document.getElementById("genAnnoError").classList.add("show");      document.getElementById("genAnno").classList.add("input-error");      hasError = true; }
+      if (hasError) return;
+
+      const results   = document.getElementById("modalResults");
+      const noResults = document.getElementById("noResults");
+      noResults.style.display = "none";
+      results.innerHTML = "<p>⏳ Ricerca su Wikipedia e generazione schema in corso... 🤖</p>";
+
+      // Nascondi mappa precedente
+      const mc = document.getElementById("mappaContainer");
+      if (mc) mc.style.display = "none";
+
+      try {
+        const apiUrl = new URL("../backend/api/generate_schema.php", window.location.href).href;
+        const data = await fetchJSON(apiUrl, {
+          method:  "POST",
+          headers: { "Content-Type": "application/json" },
+          body:    JSON.stringify({ materia, argomento, anno, formato: "json" })
+        });
+
+        if (!data.success) {
+          results.innerHTML = `<p>❌ Errore: ${data.error || (data.errors || []).join(", ")}</p>`;
+          return;
+        }
+
+        // Salva globalmente per la mappa
+        const cleanedSchema = cleanSchemaText(data.schema);
+        _ultimoSchema = { materia, argomento, anno, text: cleanedSchema };
+
+        const mEnc = encodeURIComponent(materia);
+        const aEnc = encodeURIComponent(argomento);
+        const nEnc = encodeURIComponent(anno);
+
+        const schemaDiv = document.createElement("div");
+        schemaDiv.className = "generated-schema";
+        schemaDiv.innerHTML = `
+          <h3>Schema: ${data.materia} — ${data.argomento} (${data.anno})</h3>
+          <small style="color:#888">Fonte: ${data.fonte_wiki}</small>
+          <pre id="schemaText">${escapeHtml(cleanedSchema)}</pre>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button onclick="downloadSchemaPDF('${mEnc}','${aEnc}','${nEnc}')">
+              📄 Scarica (Ctrl+P → Salva PDF)
+            </button>
+            <button onclick="downloadSchemaImmagine()">
+              🖼️ Scarica Schema come Immagine
+            </button>
+            <button onclick="mostraMappaConcettuale('${mEnc}','${aEnc}','${nEnc}', _ultimoSchema.text)"
+              style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border:none;
+                     padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;
+                     font-size:13px;box-shadow:0 2px 8px rgba(99,102,241,.4);">
+              🗺️ Mappa Concettuale
+            </button>
+          </div>
+        `;
+        results.innerHTML = "";
+        results.appendChild(schemaDiv);
+
+        // Crea contenitore mappa se non esiste
+        if (!document.getElementById("mappaContainer")) {
+          const mapDiv = document.createElement("div");
+          mapDiv.id = "mappaContainer";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          results.parentNode.insertBefore(mapDiv, results.nextSibling);
+        }
+
+      } catch (err) {
+        // Fallback: genera localmente senza backend
+        const info = await searchWikipedia(argomento);
+        const schema = generateAISchema(materia, argomento, anno, info);
+        const cleanedSchema = cleanSchemaText(schema);
+        _ultimoSchema = { materia, argomento, anno, text: cleanedSchema };
+
+        const mEnc = encodeURIComponent(materia);
+        const aEnc = encodeURIComponent(argomento);
+        const nEnc = encodeURIComponent(anno);
+
+        const schemaDiv = document.createElement("div");
+        schemaDiv.className = "generated-schema";
+        schemaDiv.innerHTML = `
+          <h3>Schema Generato per ${materia} - ${argomento} (${anno})</h3>
+          <pre id="schemaText">${escapeHtml(cleanedSchema)}</pre>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+            <button onclick="downloadSchema()">🖼️ Scarica come Immagine</button>
+            <button onclick="mostraMappaConcettuale('${mEnc}','${aEnc}','${nEnc}', _ultimoSchema.text)"
+              style="background:linear-gradient(135deg,#4338ca,#6366f1);color:#fff;border:none;
+                     padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;
+                     font-size:13px;box-shadow:0 2px 8px rgba(99,102,241,.4);">
+              🗺️ Mappa Concettuale
+            </button>
+          </div>
+        `;
+        results.innerHTML = "";
+        results.appendChild(schemaDiv);
+
+        if (!document.getElementById("mappaContainer")) {
+          const mapDiv = document.createElement("div");
+          mapDiv.id = "mappaContainer";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          results.parentNode.insertBefore(mapDiv, results.nextSibling);
+        }
+      }
+    }
+
+    // ── DOWNLOAD HTML via backend (Ctrl+P → PDF) ────────────────────────────
+    function downloadSchemaPDF(materia, argomento, anno) {
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = new URL("../backend/api/generate_schema.php", window.location.href).href;
+      form.style.display = "none";
+      [["materia", decodeURIComponent(materia)], ["argomento", decodeURIComponent(argomento)],
+       ["anno", decodeURIComponent(anno)], ["formato", "pdf"]].forEach(([name, value]) => {
+        const input = document.createElement("input");
+        input.name = name; input.value = value;
+        form.appendChild(input);
+      });
+      document.body.appendChild(form);
+      form.submit();
+      document.body.removeChild(form);
+    }
+
+    // ── DOWNLOAD SCHEMA IMMAGINE (html2canvas) ──────────────────────────────
+    function downloadSchemaImmagine() {
+      const schemaDiv = document.querySelector(".generated-schema");
+      if (typeof html2canvas === "undefined") { alert("Libreria html2canvas non caricata."); return; }
+      html2canvas(schemaDiv).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "schema.png";
+        link.href = canvas.toDataURL();
+        link.click();
+      });
+    }
+
+    // Alias per fallback locale
+    function downloadSchema() { downloadSchemaImmagine(); }
+
+    // ── ESCAPE HTML ─────────────────────────────────────────────────────────
+    function escapeHtml(text) {
+      return text.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+
+    function cleanSchemaText(text) {
+      if (!text) return "";
+      return text
+        .split("\n")
+        .map(line => {
+          const stripped = line
+            .trim()
+            .replace(/^[\s]*[•▸►▶▪◦\-–—\*]+[\s]*/g, "")
+            .replace(/^[\u2500-\u257F\u2580-\u259F\u25A0-\u25FF\s]+$/g, "")
+            .replace(/[\u2500-\u257F\u2580-\u259F\u25A0-\u25FF]+/g, "")
+            .replace(/[═━]+/g, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+          return stripped;
+        })
+        .filter(line => line.length > 0)
+        .join("\n");
+    }
+
+    // ── RICERCA WIKIPEDIA (fallback locale) ────────────────────────────────
+    async function searchWikipedia(query) {
+      try {
+        const response = await fetch(`https://it.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+        const data = await response.json();
+        return data.extract || "Informazioni non trovate.";
+      } catch (e) {
+        return "Errore nella ricerca.";
+      }
+    }
+
+    // ── GENERA SCHEMA LOCALE (fallback) ────────────────────────────────────
+    function generateAISchema(materia, argomento, anno, info) {
+      let schema = `Schema per la materia: ${materia}\nArgomento: ${argomento}\nAnno Scolastico: ${anno}\n\n`;
+      const sentences = info.split(/[\.\!\?]+/).filter(Boolean).map(s => s.trim()).slice(0, 4);
+      const lowerArg = argomento.toLowerCase();
+      const isStudioFunzione = lowerArg.includes('studio') && lowerArg.includes('funzione');
+      const livello = anno.toLowerCase().includes('primaria') ? 'base' : anno.toLowerCase().includes('secondaria i') ? 'medio' : 'avanzato';
+
+      schema += "1. Introduzione\n";
+      schema += `${sentences[0] || `Definizione chiara di ${argomento} in ${materia}`}\n`;
+      schema += `Importanza: ${sentences[1] || 'Perché questo argomento è utile e cosa serve sapere.'}\n\n`;
+
+      if (isStudioFunzione) {
+        schema += "2. Studio di funzione - Passaggi da seguire\n";
+        schema += "Individua il dominio e le eventuali condizioni di esistenza.\n";
+        schema += "Calcola i limiti notevoli e gli asintoti orizzontali/verticali.\n";
+        schema += "Trova la derivata e studiane il segno per monotonia.\n";
+        schema += "Individua massimi, minimi, punti di flesso e concavità.\n";
+        schema += "Costruisci il grafico e verifica la forma complessiva.\n\n";
+      } else {
+        schema += "2. Concetti Chiave\n";
+        if (livello === 'base') {
+          schema += `Concetti base: ${sentences[2] || `Elementi fondamentali di ${argomento}`}\n`;
+          schema += "Esempi semplici e intuitivi.\n";
+        } else {
+          schema += `Concetti principali: ${sentences[2] || `Approfondimenti su ${argomento}`}\n`;
+          schema += "Esempi pratici e applicazioni reali.\n";
+          schema += "Collegamenti con altre parti del corso.\n";
+        }
+        schema += "\n";
+      }
+
+      schema += "3. Passaggi principali\n";
+      schema += "Leggi con attenzione l'enunciato e i dati disponibili.\n";
+      schema += "Organizza il metodo: definizione, proprietà, calcolo, verifica.\n";
+      schema += "Esegui ogni passaggio con ordine e ricontrolla i conti.\n";
+      schema += "Ricava le conclusioni e collega il risultato alla teoria.\n\n";
+
+      schema += "4. Cosa includere nello schema logico\n";
+      schema += "Titoli chiari: introduzione, definizione, procedimento, verifica.\n";
+      schema += "Blocchi grandi e ben separati per ogni punto.\n";
+      schema += "Spiega i passaggi con parole semplici e frasi brevi.\n\n";
+
+      schema += "5. Verifica e ripasso\n";
+      schema += "Controlla i passaggi e i calcoli.\n";
+      schema += "Ripassa i concetti chiave con parole tue.\n\n";
+
+      schema += "6. Risorse consigliate\n";
+      schema += "Libri di testo consigliati.\n";
+      schema += `Wikipedia IT: https://it.wikipedia.org/wiki/${encodeURIComponent(argomento)}\n`;
+      return schema;
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    // MAPPA CONCETTUALE — genera SVG radiale e permette download PNG / SVG
+    // Funziona completamente nel browser, senza API key.
+    // ════════════════════════════════════════════════════════════════════════
+
+    function mostraMappaConcettuale(materia, argomento, anno, schemaText) {
+      const dati = _estraiDatiMappa(decodeURIComponent(argomento), decodeURIComponent(materia), schemaText);
+      const svgEl = _costruisciSVGMappa(dati);
+
+      const container = document.getElementById("mappaContainer");
+      if (!container) return;
+      container.innerHTML = "";
+      container.style.display = "block";
+
+      const aEnc = encodeURIComponent(decodeURIComponent(argomento));
+
+      const header = document.createElement("div");
+      header.style.cssText = "display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px;";
+      header.innerHTML = `
+        <strong style="font-size:15px;color:#0f172a;">🗺️ Schema Logico — ${decodeURIComponent(argomento)} • ${decodeURIComponent(materia)} (${anno})</strong>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button onclick="scaricaMappaPNG('${aEnc}')"
+            style="font-size:12px;padding:6px 14px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:6px;cursor:pointer;">
+            ⬇️ Scarica PNG
+          </button>
+          <button onclick="scaricaMappaSVG('${aEnc}')"
+            style="font-size:12px;padding:6px 14px;background:#1e293b;color:#e2e8f0;border:1px solid #334155;border-radius:6px;cursor:pointer;">
+            ⬇️ Scarica SVG
+          </button>
+          <button onclick="document.getElementById('mappaContainer').style.display='none'"
+            style="font-size:12px;padding:6px 14px;background:#7f1d1d;color:#fecaca;border:none;border-radius:6px;cursor:pointer;">
+            ✕ Chiudi
+          </button>
+        </div>
+      `;
+      container.appendChild(header);
+
+      svgEl.id = "mappaSVG";
+      svgEl.style.cssText = "width:100%;height:auto;border-radius:12px;";
+      container.appendChild(svgEl);
+      container.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function _estraiDatiMappa(argomento, materia, schemaText) {
+      const righe = (schemaText || "").split("\n").map(r => r.trim()).filter(Boolean);
+      const concetti = [];
+      const dettagliPerNodo = {};
+      let sezioneCorrente = -1;
+
+      const ESCLUDI = ["http", "Ctrl", "Salva", "Genera", "clicca", "www", "wikipedia", "treccani", "khan", "libri", "libro"];
+      const isPlaceholder = text => /^[-•□\s]+$/.test(text) || text.length === 0;
+      const cleanLine = text => text
+        .replace(/^[-•□]+\s*/, "")
+        .replace(/\s*[-–—]+\s*/g, " ")
+        .replace(/\s{2,}/g, " ")
+        .trim();
+
+      for (let i = 0; i < righe.length; i++) {
+        const riga = righe[i];
+        if (riga.includes("===") || riga.startsWith("Generato") || riga.startsWith("────")) continue;
+
+        const matchSez = riga.match(/^(\d+)\.\s+(.+)/);
+        if (matchSez) {
+          const title = matchSez[2]
+            .replace(/dell['’]argomento/gi, "")
+            .replace(/di verifica/gi, "")
+            .replace(/consigliate/gi, "")
+            .replace(/schema logico/gi, "Schema Logico")
+            .trim();
+          const label = title.charAt(0).toUpperCase() + title.slice(1);
+          if (label.length > 1 && concetti.length < 6) {
+            concetti.push(label);
+            sezioneCorrente = concetti.length - 1;
+            dettagliPerNodo[sezioneCorrente] = [];
+          } else {
+            sezioneCorrente = -1;
+          }
+          continue;
+        }
+
+        const matchBullet = riga.match(/^[-•□]\s+(.+)/);
+        if (matchBullet && sezioneCorrente >= 0) {
+          const raw = cleanLine(matchBullet[1]);
+          if (isPlaceholder(raw)) continue;
+          if (ESCLUDI.some(e => raw.toLowerCase().includes(e.toLowerCase()))) continue;
+          const label = raw.length > 70 ? raw.substring(0, 70) + "…" : raw;
+          if (label.length > 6 && dettagliPerNodo[sezioneCorrente].length < 4) {
+            dettagliPerNodo[sezioneCorrente].push(label);
+          }
+          continue;
+        }
+
+        if (sezioneCorrente >= 0) {
+          const raw = cleanLine(riga);
+          if (isPlaceholder(raw)) continue;
+          if (/^(Materia|Argomento|Anno|Livello|Fonte|Perché|Wikipedia)/i.test(raw)) continue;
+          if (ESCLUDI.some(e => raw.toLowerCase().includes(e.toLowerCase()))) continue;
+          if (raw.length > 20 && dettagliPerNodo[sezioneCorrente].length < 4) {
+            const label = raw.length > 70 ? raw.substring(0, 70) + "…" : raw;
+            dettagliPerNodo[sezioneCorrente].push(label);
+          }
+        }
+      }
+
+      if (concetti.length === 0) {
+        ["Introduzione", "Concetti Chiave", "Passaggi", "Schema Logico", "Verifica", "Risorse"].forEach((title, i) => {
+          concetti.push(title);
+          dettagliPerNodo[i] = [];
+        });
+      }
+
+      for (let i = 0; i < concetti.length; i++) {
+        if (!dettagliPerNodo[i]) dettagliPerNodo[i] = [];
+        if (dettagliPerNodo[i].length === 0) {
+          dettagliPerNodo[i] = [
+            "Aggiungi qui i punti principali del riassunto.",
+            "Usa frasi brevi e coerenti con il testo.",
+            "Riporta le stesse idee del riassunto in ogni blocco."
+          ].slice(0, 3);
+        }
+      }
+
+      return { argomento, materia, concetti: concetti.slice(0, 6), dettagliPerNodo };
+    }
+
+    function _costruisciSVGMappa({ argomento, materia, concetti, dettagliPerNodo }) {
+      // Canvas più largo, più bianco e nodi rettangolari grandi in base al testo
+      const W = 1800, H = 1250, cx = W / 2, cy = H / 2;
+      const palette = ["#0f172a","#1d4ed8","#047857","#c2410c","#991b1b","#9333ea","#0ea5e9"];
+      const n = concetti.length;
+      const raggioPrincipale = 330;  // distanza centro → nodo principale
+      const raggioDettaglio = 220;   // distanza nodo principale → foglia
+
+      const _svg = (tag, attrs) => {
+        const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        Object.entries(attrs || {}).forEach(([k,v]) => el.setAttribute(k, v));
+        return el;
+      };
+      const _stop = (offset, color) => {
+        const s = _svg("stop", { offset });
+        s.setAttribute("stop-color", color);
+        return s;
+      };
+      const _clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+      const _wrap = (str, maxCh) => {
+        const s = str.trim();
+        if (s.length <= maxCh) return [s];
+        const parts = [];
+        let remaining = s;
+        while (remaining.length > maxCh) {
+          const idx = remaining.lastIndexOf(" ", maxCh);
+          if (idx <= 0) break;
+          parts.push(remaining.slice(0, idx));
+          remaining = remaining.slice(idx + 1);
+        }
+        parts.push(remaining);
+        return parts;
+      };
+
+      const nodePrincipali = concetti.map((label, i) => {
+        const ang = (2 * Math.PI * i) / n - Math.PI / 2;
+        return {
+          x: cx + raggioPrincipale * Math.cos(ang),
+          y: cy + raggioPrincipale * Math.sin(ang),
+          ang, label, idx: i
+        };
+      });
+
+      const svg = _svg("svg", { xmlns:"http://www.w3.org/2000/svg", viewBox:`0 0 ${W} ${H}`, width:W, height:H });
+
+      const defs = _svg("defs");
+      const bgG = _svg("linearGradient", { id:"mm_bg", x1:"0%", y1:"0%", x2:"0%", y2:"100%" });
+      bgG.appendChild(_stop("0%","#ffffff")); bgG.appendChild(_stop("100%","#f8fafc"));
+      defs.appendChild(bgG);
+      const shadow = _svg("filter", { id:"mm_shadow", x:"-20%", y:"-20%", width:"140%", height:"140%" });
+      shadow.appendChild(_svg("feDropShadow", { dx:"0", dy:"8", stdDeviation:"12", floodColor:"#000000", floodOpacity:"0.08" }));
+      defs.appendChild(shadow);
+      svg.appendChild(defs);
+
+      svg.appendChild(_svg("rect", { width:W, height:H, fill:"url(#mm_bg)" }));
+
+      for (const np of nodePrincipali) {
+        const col = palette[np.idx % palette.length];
+        svg.appendChild(_svg("line", {
+          x1: cx, y1: cy, x2: np.x, y2: np.y,
+          stroke: col, "stroke-width": "3.2", opacity: "0.55"
+        }));
+      }
+
+      for (const np of nodePrincipali) {
+        const col = palette[np.idx % palette.length];
+        const dets = (dettagliPerNodo[np.idx] || []).slice(0, 4);
+        if (dets.length === 0) continue;
+
+        const angBase = np.ang;
+        const spread = dets.length === 1 ? 0.7 : 1.4;
+        const step = dets.length > 1 ? spread / (dets.length - 1) : 0;
+        const startAng = angBase - spread / 2;
+
+        dets.forEach((detLabel, di) => {
+          const ang2 = startAng + di * step;
+          const fx = _clamp(np.x + raggioDettaglio * Math.cos(ang2), 60, W - 60);
+          const fy = _clamp(np.y + raggioDettaglio * Math.sin(ang2), 50, H - 70);
+
+          svg.appendChild(_svg("line", {
+            x1: np.x, y1: np.y, x2: fx, y2: fy,
+            stroke: col, "stroke-width": "2.2", opacity: "0.65"
+          }));
+
+          const linee = _wrap(detLabel.length > 58 ? detLabel.substring(0, 58) + "…" : detLabel, 24);
+          const maxChars = Math.max(...linee.map(l => l.length));
+          const bw = Math.max(220, maxChars * 8 + 32);
+          const bh = linee.length * 22 + 32;
+          const bx = fx - bw / 2;
+          const by = fy - bh / 2;
+
+          svg.appendChild(_svg("rect", {
+            x: bx, y: by, width: bw, height: bh, rx: 20,
+            fill: "#ffffff", stroke: col, "stroke-width": "2", filter: "url(#mm_shadow)"
+          }));
+          svg.appendChild(_svg("rect", {
+            x: bx, y: by, width: bw, height: 8, rx: 10,
+            fill: col, opacity: "0.2"
+          }));
+
+          linee.forEach((riga, ri) => {
+            const t = _svg("text", {
+              x: fx,
+              y: by + 24 + ri * 20,
+              "text-anchor": "middle",
+              "dominant-baseline": "middle",
+              fill: "#0f172a",
+              "font-size": "13",
+              "font-weight": "600",
+              "font-family": "Segoe UI,Arial,sans-serif"
+            });
+            t.textContent = riga;
+            svg.appendChild(t);
+          });
+        });
+      }
+
+      for (const np of nodePrincipali) {
+        const col = palette[np.idx % palette.length];
+        const raw = np.label.length > 36 ? np.label.substring(0, 36) + "…" : np.label;
+        const linee = _wrap(raw, 18);
+        const maxChars = Math.max(...linee.map(l => l.length));
+        const side = Math.max(300, maxChars * 9 + 70, linee.length * 30 + 80);
+        const bx = np.x - side / 2;
+        const by = np.y - side / 2;
+
+        svg.appendChild(_svg("rect", {
+          x: bx, y: by, width: side, height: side, rx: 28,
+          fill: "#ffffff", stroke: col, "stroke-width": "4", filter: "url(#mm_shadow)"
+        }));
+
+        svg.appendChild(_svg("text", {
+          x: np.x, y: by + 32,
+          "text-anchor": "middle", "dominant-baseline": "middle",
+          fill: col, "font-size": "14", "font-weight": "800",
+          "font-family": "Segoe UI,Arial,sans-serif"
+        })).textContent = `${np.idx + 1}`;
+
+        linee.forEach((riga, ri) => {
+          const t = _svg("text", {
+            x: np.x, y: by + 58 + ri * 28,
+            "text-anchor": "middle", "dominant-baseline": "middle",
+            fill: "#0f172a", "font-size": "17", "font-weight": "800",
+            "font-family": "Segoe UI,Arial,sans-serif"
+          });
+          t.textContent = riga;
+          svg.appendChild(t);
+        });
+      }
+
+      const centerSide = 210;
+      const centerX = cx - centerSide / 2;
+      const centerY = cy - centerSide / 2;
+      svg.appendChild(_svg("rect", {
+        x: centerX, y: centerY, width: centerSide, height: centerSide, rx: 32,
+        fill: "#ffffff", stroke: "#475569", "stroke-width": "3", filter: "url(#mm_shadow)"
+      }));
+      svg.appendChild(_svg("rect", {
+        x: centerX, y: centerY, width: centerSide, height: 16, rx: 8,
+        fill: "#475569", opacity: "0.18"
+      }));
+
+      const cenRaw = argomento.length > 22 ? argomento.substring(0, 22) + "…" : argomento;
+      const cenLinee = _wrap(cenRaw, 14);
+      cenLinee.forEach((riga, ri) => {
+        const t = _svg("text", {
+          x: cx, y: cy - (cenLinee.length - 1) * 11 + ri * 24,
+          "text-anchor": "middle", "dominant-baseline": "middle",
+          fill: "#0f172a", "font-size": "17", "font-weight": "800",
+          "font-family": "Segoe UI,Arial,sans-serif"
+        });
+        t.textContent = riga;
+        svg.appendChild(t);
+      });
+      const sub = _svg("text", {
+        x: cx, y: cy + cenLinee.length * 13,
+        "text-anchor": "middle", fill: "#475569", "font-size": "12",
+        "font-family": "Segoe UI,Arial,sans-serif"
+      });
+      sub.textContent = materia;
+      svg.appendChild(sub);
+
+      const info = _svg("text", {
+        x: cx, y: H - 28, "text-anchor": "middle",
+        fill: "#64748b", "font-size": "10", "font-family": "Segoe UI,Arial,sans-serif"
+      });
+      info.textContent = `Schema logico ampliato ${new Date().toLocaleDateString("it-IT")} ${materia}`;
+      svg.appendChild(info);
+
+      return svg;
+    }
+
+    // ── SCARICA MAPPA COME PNG ──────────────────────────────────────────────
+    function scaricaMappaPNG(argomento) {
+      const svgEl = document.getElementById("mappaSVG");
+      if (!svgEl) return;
+      const svgStr = new XMLSerializer().serializeToString(svgEl);
+      const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+      const url  = URL.createObjectURL(blob);
+      const img  = new Image();
+      img.onload = () => {
+        const vb = svgEl.getAttribute("viewBox")?.split(" ").map(Number) || [0,0,1400,1000];
+        const svgW = vb[2] || 1400, svgH = vb[3] || 1000;
+        const canvas = document.createElement("canvas");
+        canvas.width = svgW * 2; canvas.height = svgH * 2;
+        const ctx = canvas.getContext("2d");
+        ctx.scale(2, 2);
+        ctx.drawImage(img, 0, 0);
+        URL.revokeObjectURL(url);
+        const link = document.createElement("a");
+        link.download = "mappa_" + decodeURIComponent(argomento).replace(/\s+/g,"_") + ".png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      };
+      img.src = url;
+    }
+
+    // ── SCARICA MAPPA COME SVG ──────────────────────────────────────────────
+    function scaricaMappaSVG(argomento) {
+      const svgEl = document.getElementById("mappaSVG");
+      if (!svgEl) return;
+      const svgStr = new XMLSerializer().serializeToString(svgEl);
+      const blob = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
+      const link = document.createElement("a");
+      link.download = "mappa_" + decodeURIComponent(argomento).replace(/\s+/g,"_") + ".svg";
+      link.href = URL.createObjectURL(blob);
+      link.click();
+    }
+  </script>
+
+  
+
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+      <div class="cookie-content">
+        <p>We use cookies for essential functions and analytics. 
+          <a href="privacy.html">Privacy Policy</a>
+        </p>
+        <div class="cookie-buttons">
+          <button id="accept-essential" class="btn-minimal">Essential Only</button>
+          <button id="accept-all" class="btn-primary">Accept All</button>
+        </div>
+      </div>
+    </div>
+
+     <script type="module">
+
+      // Cookie manager
+      const CookieManager = {
+
+        init() {
+          // Check if consent already given
+          if (!this.getConsent()) {
+            this.showBanner()
+          }
+          this.setupListeners()
+          this.applyConsent(this.getConsent())
+        },
+        
+        showBanner() {
+          document.getElementById('cookie-banner').style.display = 'block'
+        },
+        
+        hideBanner() {
+          document.getElementById('cookie-banner').style.display = 'none'
+        },
+        
+        setupListeners() {
+          document.getElementById('accept-essential').addEventListener('click', () => {
+            this.saveConsent({ essential: true, analytics: false, marketing: false })
+            this.hideBanner()
+          });
+          
+          document.getElementById('accept-all').addEventListener('click', () => {
+            this.saveConsent({ essential: true, analytics: true, marketing: false })
+            this.hideBanner()
+            this.enableAnalytics() // Enable Firebase Analytics if needed
+          });
+        },
+        
+        saveConsent(consent) {
+          localStorage.setItem('cookieConsent', JSON.stringify({
+            ...consent,
+            timestamp: new Date().toISOString()
+          }))
+        },
+        
+        getConsent() {
+          const saved = localStorage.getItem('cookieConsent')
+          return saved ? JSON.parse(saved) : null
+        },
+        
+        applyConsent(consent) {
+          if (!consent) return
+          
+          // Block analytics if not consented
+          if (!consent.analytics) {
+            this.blockAnalytics()
+          }
+        },
+        
+        blockAnalytics() {
+          // Disable Firebase Analytics
+          if (typeof window !== 'undefined') {
+            window['ga-disable-UA-XXXXX-Y'] = true // Your GA ID
+          }
+        },
+        
+        enableAnalytics() {
+          // Initialize Firebase Analytics only if consented
+          if (typeof firebase !== 'undefined' && firebase.analytics) {
+            firebase.analytics()
+          }
+        }
+      };
+
+      window.addEventListener('DOMContentLoaded', (e) => {
+        console.log('@VERSION >> 0.7.0')
+
+        CookieManager.init()
+      })
+
+    </script>
+
+</body>
+</html>
