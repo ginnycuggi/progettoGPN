@@ -419,7 +419,7 @@
         if (!document.getElementById("mappaContainer")) {
           const mapDiv = document.createElement("div");
           mapDiv.id = "mappaContainer";
-          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:16px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;overflow-x:auto;";
           results.parentNode.insertBefore(mapDiv, results.nextSibling);
         }
       } catch (err) {
@@ -506,7 +506,7 @@
         if (!document.getElementById("mappaContainer")) {
           const mapDiv = document.createElement("div");
           mapDiv.id = "mappaContainer";
-          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:16px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;overflow-x:auto;";
           results.parentNode.insertBefore(mapDiv, results.nextSibling);
         }
 
@@ -542,7 +542,7 @@
         if (!document.getElementById("mappaContainer")) {
           const mapDiv = document.createElement("div");
           mapDiv.id = "mappaContainer";
-          mapDiv.style.cssText = "display:none;margin-top:20px;padding:24px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;";
+          mapDiv.style.cssText = "display:none;margin-top:20px;padding:16px;background:#ffffff;border-radius:18px;border:1px solid #d1d5db;box-shadow:0 18px 45px rgba(15,23,42,0.06);color:#0f172a;overflow-x:auto;";
           results.parentNode.insertBefore(mapDiv, results.nextSibling);
         }
       }
@@ -706,7 +706,7 @@
       container.appendChild(header);
 
       svgEl.id = "mappaSVG";
-      svgEl.style.cssText = "width:100%;height:auto;border-radius:12px;";
+      svgEl.style.cssText = "max-width:100%;height:auto;border-radius:12px;display:block;";
       container.appendChild(svgEl);
       container.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -794,192 +794,198 @@
     }
 
     function _costruisciSVGMappa({ argomento, materia, concetti, dettagliPerNodo }) {
-      // Canvas più largo, più bianco e nodi rettangolari grandi in base al testo
-      const W = 1800, H = 1250, cx = W / 2, cy = H / 2;
-      const palette = ["#0f172a","#1d4ed8","#047857","#c2410c","#991b1b","#9333ea","#0ea5e9"];
-      const n = concetti.length;
-      const raggioPrincipale = 330;  // distanza centro → nodo principale
-      const raggioDettaglio = 220;   // distanza nodo principale → foglia
+      // ── MAPPA AD ALBERO TOP-DOWN (stile immagine allegata) ──────────────
+      // Layout: radice in cima al centro, rami principali nella riga sotto,
+      // foglie nella riga più in basso. Connessioni con frecce colorate.
 
-      const _svg = (tag, attrs) => {
+      const FONT = "Arial,Helvetica,sans-serif";
+      const palette = [
+        { bg:"#fff9c4", border:"#f9a825", text:"#5d4037" }, // giallo
+        { bg:"#e8f5e9", border:"#388e3c", text:"#1b5e20" }, // verde
+        { bg:"#e3f2fd", border:"#1565c0", text:"#0d47a1" }, // blu
+        { bg:"#fce4ec", border:"#c62828", text:"#880e4f" }, // rosso
+        { bg:"#f3e5f5", border:"#6a1b9a", text:"#4a148c" }, // viola
+        { bg:"#fff3e0", border:"#e65100", text:"#bf360c" }, // arancio
+        { bg:"#e0f7fa", border:"#00838f", text:"#006064" }, // teal
+      ];
+
+      // Geometria nodi
+      const NODE_W   = 150, NODE_H   = 50,  NODE_RX = 10;
+      const LEAF_W   = 130, LEAF_H   = 44,  LEAF_RX = 8;
+      const ROOT_W   = 200, ROOT_H   = 56,  ROOT_RX = 14;
+
+      // Spaziatura verticale
+      const ROW_ROOT  = 60;
+      const ROW_NODE  = 180;
+      const ROW_LEAF  = 330;
+
+      const n = concetti.length;
+
+      // ── Calcola larghezza totale necessaria ──────────────────────────────
+      // Ogni nodo principale porta con sé le sue foglie affiancate
+      const GAP_H_NODE = 30;   // gap orizzontale tra nodi principali
+      const GAP_H_LEAF = 10;   // gap orizzontale tra foglie dello stesso ramo
+
+      // Per ogni nodo principale calcoliamo la larghezza del suo "cluster"
+      const clusters = concetti.map((label, i) => {
+        const leaves = (dettagliPerNodo[i] || []).slice(0, 4);
+        const nLeaves = Math.max(leaves.length, 1);
+        const clusterW = Math.max(NODE_W, nLeaves * LEAF_W + (nLeaves - 1) * GAP_H_LEAF);
+        return { label, idx: i, leaves, clusterW };
+      });
+
+      const totalClustersW = clusters.reduce((s, c) => s + c.clusterW, 0)
+                           + (n - 1) * GAP_H_NODE;
+      const MARGIN = 60;
+      const W = Math.max(900, totalClustersW + MARGIN * 2);
+      const H = 500;
+
+      // ── Posizioni orizzontali dei cluster ───────────────────────────────
+      let xCursor = MARGIN;
+      clusters.forEach(c => {
+        c.cx = xCursor + c.clusterW / 2;  // centro del cluster
+        xCursor += c.clusterW + GAP_H_NODE;
+      });
+
+      // ── Helper SVG ───────────────────────────────────────────────────────
+      const _svg = (tag, attrs = {}) => {
         const el = document.createElementNS("http://www.w3.org/2000/svg", tag);
-        Object.entries(attrs || {}).forEach(([k,v]) => el.setAttribute(k, v));
+        Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
         return el;
       };
-      const _stop = (offset, color) => {
-        const s = _svg("stop", { offset });
-        s.setAttribute("stop-color", color);
-        return s;
-      };
-      const _clamp = (v, a, b) => Math.min(Math.max(v, a), b);
       const _wrap = (str, maxCh) => {
-        const s = str.trim();
+        const s = String(str).trim();
         if (s.length <= maxCh) return [s];
         const parts = [];
-        let remaining = s;
-        while (remaining.length > maxCh) {
-          const idx = remaining.lastIndexOf(" ", maxCh);
-          if (idx <= 0) break;
-          parts.push(remaining.slice(0, idx));
-          remaining = remaining.slice(idx + 1);
+        let rem = s;
+        while (rem.length > maxCh) {
+          let idx = rem.lastIndexOf(" ", maxCh);
+          if (idx <= 0) idx = maxCh;
+          parts.push(rem.slice(0, idx));
+          rem = rem.slice(idx).trimStart();
         }
-        parts.push(remaining);
+        if (rem) parts.push(rem);
         return parts;
       };
 
-      const nodePrincipali = concetti.map((label, i) => {
-        const ang = (2 * Math.PI * i) / n - Math.PI / 2;
-        return {
-          x: cx + raggioPrincipale * Math.cos(ang),
-          y: cy + raggioPrincipale * Math.sin(ang),
-          ang, label, idx: i
-        };
-      });
-
-      const svg = _svg("svg", { xmlns:"http://www.w3.org/2000/svg", viewBox:`0 0 ${W} ${H}`, width:W, height:H });
-
-      const defs = _svg("defs");
-      const bgG = _svg("linearGradient", { id:"mm_bg", x1:"0%", y1:"0%", x2:"0%", y2:"100%" });
-      bgG.appendChild(_stop("0%","#ffffff")); bgG.appendChild(_stop("100%","#f8fafc"));
-      defs.appendChild(bgG);
-      const shadow = _svg("filter", { id:"mm_shadow", x:"-20%", y:"-20%", width:"140%", height:"140%" });
-      shadow.appendChild(_svg("feDropShadow", { dx:"0", dy:"8", stdDeviation:"12", floodColor:"#000000", floodOpacity:"0.08" }));
-      defs.appendChild(shadow);
-      svg.appendChild(defs);
-
-      svg.appendChild(_svg("rect", { width:W, height:H, fill:"url(#mm_bg)" }));
-
-      for (const np of nodePrincipali) {
-        const col = palette[np.idx % palette.length];
-        svg.appendChild(_svg("line", {
-          x1: cx, y1: cy, x2: np.x, y2: np.y,
-          stroke: col, "stroke-width": "3.2", opacity: "0.55"
-        }));
-      }
-
-      for (const np of nodePrincipali) {
-        const col = palette[np.idx % palette.length];
-        const dets = (dettagliPerNodo[np.idx] || []).slice(0, 4);
-        if (dets.length === 0) continue;
-
-        const angBase = np.ang;
-        const spread = dets.length === 1 ? 0.7 : 1.4;
-        const step = dets.length > 1 ? spread / (dets.length - 1) : 0;
-        const startAng = angBase - spread / 2;
-
-        dets.forEach((detLabel, di) => {
-          const ang2 = startAng + di * step;
-          const fx = _clamp(np.x + raggioDettaglio * Math.cos(ang2), 60, W - 60);
-          const fy = _clamp(np.y + raggioDettaglio * Math.sin(ang2), 50, H - 70);
-
-          svg.appendChild(_svg("line", {
-            x1: np.x, y1: np.y, x2: fx, y2: fy,
-            stroke: col, "stroke-width": "2.2", opacity: "0.65"
-          }));
-
-          const linee = _wrap(detLabel.length > 58 ? detLabel.substring(0, 58) + "…" : detLabel, 24);
-          const maxChars = Math.max(...linee.map(l => l.length));
-          const bw = Math.max(220, maxChars * 8 + 32);
-          const bh = linee.length * 22 + 32;
-          const bx = fx - bw / 2;
-          const by = fy - bh / 2;
-
-          svg.appendChild(_svg("rect", {
-            x: bx, y: by, width: bw, height: bh, rx: 20,
-            fill: "#ffffff", stroke: col, "stroke-width": "2", filter: "url(#mm_shadow)"
-          }));
-          svg.appendChild(_svg("rect", {
-            x: bx, y: by, width: bw, height: 8, rx: 10,
-            fill: col, opacity: "0.2"
-          }));
-
-          linee.forEach((riga, ri) => {
-            const t = _svg("text", {
-              x: fx,
-              y: by + 24 + ri * 20,
-              "text-anchor": "middle",
-              "dominant-baseline": "middle",
-              fill: "#0f172a",
-              "font-size": "13",
-              "font-weight": "600",
-              "font-family": "Segoe UI,Arial,sans-serif"
-            });
-            t.textContent = riga;
-            svg.appendChild(t);
-          });
-        });
-      }
-
-      for (const np of nodePrincipali) {
-        const col = palette[np.idx % palette.length];
-        const raw = np.label.length > 36 ? np.label.substring(0, 36) + "…" : np.label;
-        const linee = _wrap(raw, 18);
-        const maxChars = Math.max(...linee.map(l => l.length));
-        const side = Math.max(300, maxChars * 9 + 70, linee.length * 30 + 80);
-        const bx = np.x - side / 2;
-        const by = np.y - side / 2;
-
-        svg.appendChild(_svg("rect", {
-          x: bx, y: by, width: side, height: side, rx: 28,
-          fill: "#ffffff", stroke: col, "stroke-width": "4", filter: "url(#mm_shadow)"
-        }));
-
-        svg.appendChild(_svg("text", {
-          x: np.x, y: by + 32,
-          "text-anchor": "middle", "dominant-baseline": "middle",
-          fill: col, "font-size": "14", "font-weight": "800",
-          "font-family": "Segoe UI,Arial,sans-serif"
-        })).textContent = `${np.idx + 1}`;
-
-        linee.forEach((riga, ri) => {
+      // Disegna un rettangolo con testo centrato (multi-riga)
+      const _box = (svg, x, y, w, h, rx, bg, border, textColor, labelLines, fontSize, bold) => {
+        const rect = _svg("rect", { x: x - w/2, y, width: w, height: h, rx,
+          fill: bg, stroke: border, "stroke-width": "2" });
+        svg.appendChild(rect);
+        const totalH = labelLines.length * (fontSize + 4);
+        const startY = y + (h - totalH) / 2 + fontSize;
+        labelLines.forEach((line, i) => {
           const t = _svg("text", {
-            x: np.x, y: by + 58 + ri * 28,
-            "text-anchor": "middle", "dominant-baseline": "middle",
-            fill: "#0f172a", "font-size": "17", "font-weight": "800",
-            "font-family": "Segoe UI,Arial,sans-serif"
+            x, y: startY + i * (fontSize + 4),
+            "text-anchor": "middle", fill: textColor,
+            "font-size": fontSize, "font-weight": bold ? "bold" : "normal",
+            "font-family": FONT
           });
-          t.textContent = riga;
+          t.textContent = line;
           svg.appendChild(t);
         });
-      }
+        return { cx: x, cy: y + h / 2, top: y, bottom: y + h, left: x - w/2, right: x + w/2 };
+      };
 
-      const centerSide = 210;
-      const centerX = cx - centerSide / 2;
-      const centerY = cy - centerSide / 2;
-      svg.appendChild(_svg("rect", {
-        x: centerX, y: centerY, width: centerSide, height: centerSide, rx: 32,
-        fill: "#ffffff", stroke: "#475569", "stroke-width": "3", filter: "url(#mm_shadow)"
-      }));
-      svg.appendChild(_svg("rect", {
-        x: centerX, y: centerY, width: centerSide, height: 16, rx: 8,
-        fill: "#475569", opacity: "0.18"
-      }));
-
-      const cenRaw = argomento.length > 22 ? argomento.substring(0, 22) + "…" : argomento;
-      const cenLinee = _wrap(cenRaw, 14);
-      cenLinee.forEach((riga, ri) => {
-        const t = _svg("text", {
-          x: cx, y: cy - (cenLinee.length - 1) * 11 + ri * 24,
-          "text-anchor": "middle", "dominant-baseline": "middle",
-          fill: "#0f172a", "font-size": "17", "font-weight": "800",
-          "font-family": "Segoe UI,Arial,sans-serif"
+      // Linea con freccia in basso
+      const _arrow = (svg, x1, y1, x2, y2, color) => {
+        const line = _svg("line", {
+          x1, y1, x2, y2,
+          stroke: color, "stroke-width": "2",
+          "marker-end": "url(#arrowhead_" + color.replace("#","") + ")"
         });
-        t.textContent = riga;
-        svg.appendChild(t);
+        svg.appendChild(line);
+      };
+
+      // ── Costruisci SVG ───────────────────────────────────────────────────
+      const svg = _svg("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        viewBox: `0 0 ${W} ${H}`,
+        width: W, height: H,
+        style: "background:#ffffff;"
       });
+
+      // defs: frecce colorate per ogni ramo
+      const defs = _svg("defs");
+      const arrowColors = [...new Set(clusters.map((_, i) => palette[i % palette.length].border))];
+      arrowColors.push("#475569"); // per la radice
+      arrowColors.forEach(color => {
+        const id = "arrowhead_" + color.replace("#","");
+        const marker = _svg("marker", {
+          id, markerWidth: "8", markerHeight: "8",
+          refX: "6", refY: "3", orient: "auto"
+        });
+        const path = _svg("path", { d: "M0,0 L0,6 L8,3 z", fill: color });
+        marker.appendChild(path);
+        defs.appendChild(marker);
+      });
+      // ombra leggera
+      const filt = _svg("filter", { id: "sh", x:"-10%", y:"-10%", width:"120%", height:"130%" });
+      filt.appendChild(_svg("feDropShadow", { dx:"1", dy:"2", stdDeviation:"3",
+        floodColor:"#00000022" }));
+      defs.appendChild(filt);
+      svg.appendChild(defs);
+
+      // ── RADICE ───────────────────────────────────────────────────────────
+      const rootCX = W / 2;
+      const rootLabel = _wrap(argomento.length > 30 ? argomento.slice(0,30)+"…" : argomento, 22);
+      const rootBox = _box(svg, rootCX, ROW_ROOT, ROOT_W, ROOT_H + (rootLabel.length-1)*16,
+        ROOT_RX, "#667eea", "#4338ca", "#ffffff", rootLabel, 15, true);
+
+      // Sottotitolo materia
       const sub = _svg("text", {
-        x: cx, y: cy + cenLinee.length * 13,
-        "text-anchor": "middle", fill: "#475569", "font-size": "12",
-        "font-family": "Segoe UI,Arial,sans-serif"
+        x: rootCX, y: rootBox.bottom + 14,
+        "text-anchor": "middle", fill: "#764ba2",
+        "font-size": "11", "font-family": FONT, "font-style": "italic"
       });
       sub.textContent = materia;
       svg.appendChild(sub);
 
-      const info = _svg("text", {
-        x: cx, y: H - 28, "text-anchor": "middle",
-        fill: "#64748b", "font-size": "10", "font-family": "Segoe UI,Arial,sans-serif"
+      // ── NODI PRINCIPALI + FOGLIE ──────────────────────────────────────────
+      clusters.forEach((c, i) => {
+        const col = palette[i % palette.length];
+        const nodeX = c.cx;
+        const nodeY = ROW_NODE;
+
+        // Linea radice → nodo principale
+        _arrow(svg, rootBox.cx, rootBox.bottom - 2, nodeX, nodeY, "#475569");
+
+        // Nodo principale
+        const nodeLabel = _wrap(c.label.length > 22 ? c.label.slice(0,22)+"…" : c.label, 16);
+        const nodeH = NODE_H + Math.max(0, nodeLabel.length - 1) * 16;
+        const nodeBox = _box(svg, nodeX, nodeY, NODE_W, nodeH,
+          NODE_RX, col.bg, col.border, col.text, nodeLabel, 13, true);
+
+        // Foglie del cluster
+        const leaves = c.leaves;
+        if (leaves.length === 0) return;
+
+        const nL = leaves.length;
+        const totalLeafW = nL * LEAF_W + (nL - 1) * GAP_H_LEAF;
+        const leafStartX = c.cx - totalLeafW / 2 + LEAF_W / 2;
+
+        leaves.forEach((leafText, li) => {
+          const leafX = leafStartX + li * (LEAF_W + GAP_H_LEAF);
+          const leafY = ROW_LEAF;
+
+          // Linea nodo → foglia
+          _arrow(svg, nodeBox.cx, nodeBox.bottom - 2, leafX, leafY, col.border);
+
+          // Foglia
+          const leafLabel = _wrap(leafText.length > 28 ? leafText.slice(0,28)+"…" : leafText, 18);
+          const leafH = LEAF_H + Math.max(0, leafLabel.length - 1) * 14;
+          _box(svg, leafX, leafY, LEAF_W, leafH,
+            LEAF_RX, "#ffffff", col.border, col.text, leafLabel, 11, false);
+        });
       });
-      info.textContent = `Schema logico ampliato ${new Date().toLocaleDateString("it-IT")} ${materia}`;
+
+      // Data in basso
+      const info = _svg("text", {
+        x: W / 2, y: H - 10, "text-anchor": "middle",
+        fill: "#94a3b8", "font-size": "9", "font-family": FONT
+      });
+      info.textContent = `Mappa concettuale — ${materia} — ${new Date().toLocaleDateString("it-IT")}`;
       svg.appendChild(info);
 
       return svg;
