@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "progettoGPN",
+			"path": "../../.."
+		},
+		{
+			"name": "gpn",
+			"path": "../../../../gpn"
+		}
+	],
+	"settings": {}
+}
